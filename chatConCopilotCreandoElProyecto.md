@@ -2585,6 +2585,166 @@ git add .
 
 # Verificar qué archivos están preparados para el commit
 git status
+------------------------------------------------------------------------------------------------------------------------
+Paso 58: Crear un commit con todos los cambios
+------------------------------------------------------------------------------------------------------------------------
+# Crear commit con mensaje descriptivo
+# Crear commit con mensaje descriptivo
+git commit -m "feat: Complete NestJS project with user/role management
+
+- Add TypeORM entities for User and Role with many-to-many relationship
+- Implement JWT authentication with passport strategies
+- Add complete CRUD operations for users and roles
+- Include Docker configuration for MySQL and phpMyAdmin
+- Add validation DTOs and proper error handling
+- Configure environment variables and database connection
+- Implement role-based access control system
+- Add auth endpoints (login, register, profile)
+- Update database configuration and migrations"
+
+Una vez hecho esto, entonces ...
+------------------------------------------------------------------------------------------------------------------------
+Paso 59: Crear repositorio en GitHub
+------------------------------------------------------------------------------------------------------------------------
+Ve a GitHub (https://github.com/) y:
+
+Haz clic en el botón "+" en la esquina superior derecha
+Selecciona "New repository"
+
+Configura el repositorio:
+Repository name: socgerfleet
+Description: NestJS API with user management, role-based access control, MySQL and Docker
+Visibility: Public (o Private si prefieres)
+NO marques "Initialize this repository with a README" (ya tienes contenido local)
+
+Pulsa el botón "Create repository"
+------------------------------------------------------------------------------------------------------------------------
+Paso 60: Conectar el repositorio local con GitHub
+------------------------------------------------------------------------------------------------------------------------
+# Añadir el repositorio remoto de GitHub (reemplaza 'tu-usuario' con tu usuario de GitHub)
+git remote add origin https://github.com/socger/socgerfleet.git
+
+# Verificar que el remote se añadió correctamente
+git remote -v
+------------------------------------------------------------------------------------------------------------------------
+Paso 61: Subir el código a GitHub
+------------------------------------------------------------------------------------------------------------------------
+# Subir la rama principal a GitHub
+git push -u origin main
+------------------------------------------------------------------------------------------------------------------------
+Le comentamos a la IA que al poner el comando "git push -u origin main" me devuelve el siguiente error ... 
+
+error: src refspec main does not match any
+error: failed to push some refs to 'https://github.com/socger/socgerfleet.git'
+------------------------------------------------------------------------------------------------------------------------
+La IA nos responde: 
+El error indica que tu rama local no se llama main. Vamos a verificar cuál es el nombre de tu rama actual y solucionarlo:
+
+Paso 60.1: Verificar el nombre de la rama actual
+------------------------------------------------------------------------------------------------------------------------
+# Ver en qué rama estás actualmente
+git branch
+
+# Ver el estado del repositorio
+git status
+------------------------------------------------------------------------------------------------------------------------
+Paso 60.2: Verificar si tienes commits
+------------------------------------------------------------------------------------------------------------------------
+# Ver el historial de commits
+git log --oneline
+------------------------------------------------------------------------------------------------------------------------
+Paso 60.3: Solucionar según el escenario
+------------------------------------------------------------------------------------------------------------------------
+-- Si no tienes commits aún: --
+-------------------------------
+# Hacer el commit inicial si no lo has hecho
+git add .
+git commit -m "feat: Initial commit - Complete NestJS project with user/role management"
+
+# Verificar que ahora tienes commits
+git log --oneline
+--------------------------------------------------
+-- Si tu rama se llama master en lugar de main: --
+--------------------------------------------------
+# Cambiar el nombre de la rama a main
+git branch -M main
+
+# Ahora hacer push
+git push -u origin main
+-----------------------------------
+-- Si tu rama tiene otro nombre: --
+-----------------------------------
+# Ver todas las ramas
+git branch -a
+
+# Hacer push con el nombre correcto de tu rama (reemplaza 'nombre-rama' con el nombre que veas)
+git push -u origin nombre-rama
+
+# O cambiar a main si prefieres
+git branch -M main
+git push -u origin main
+------------------------------------------------------------------------------------------------------------------------
+Paso 60.4: Verificar remoto
+------------------------------------------------------------------------------------------------------------------------
+# Verificar que el remoto está configurado correctamente
+git remote -v
+
+# Si no está configurado, añadirlo
+git remote add origin https://github.com/socger/socgerfleet.git
+------------------------------------------------------------------------------------------------------------------------
+Paso 60.5: Push final
+------------------------------------------------------------------------------------------------------------------------
+# Una vez que tengas la rama correcta y commits, hacer push
+git push -u origin main
+------------------------------------------------------------------------------------------------------------------------
+El flujo completo sería:
+------------------------------------------------------------------------------------------------------------------------
+# 1. Verificar estado
+git branch
+git status
+
+# 2. Si no hay commits, crearlos
+git add .
+git commit -m "feat: Initial commit - Complete NestJS project setup"
+
+# 3. Cambiar a rama main si es necesario
+git branch -M main
+
+# 4. Hacer push
+git push -u origin main
+------------------------------------------------------------------------------------------------------------------------
+La IA me pide ... Ejecuta primero git branch y git status y compárteme el resultado para darte la solución exacta según 
+tu situación actual.
+------------------------------------------------------------------------------------------------------------------------
+socger@DESKTOP-FP3P9MB:~/trabajo/socger/socgerfleet$ git branch
+* main
+
+socger@DESKTOP-FP3P9MB:~/trabajo/socger/socgerfleet$ git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   chatConCopilotCreandoElProyecto.md
+
+no changes added to commit (use "git add" and/or "git commit -a")
+------------------------------------------------------------------------------------------------------------------------
+La IA me responde con lo siguiente:
+Perfecto, veo que tu repositorio ya está configurado correctamente. Tienes la rama main y ya está conectada con GitHub (origin/main). Solo tienes un archivo modificado pendiente de commit.
+
+Paso 62: Añadir los cambios pendientes y hacer push
+------------------------------------------------------------------------------------------------------------------------
+# Añadir el archivo modificado
+git add chatConCopilotCreandoElProyecto.md
+
+# Hacer commit de la documentación actualizada
+git commit -m "docs: Update project documentation with complete setup steps"
+
+# Subir los cambios a GitHub
+git push
+
+
 
 
 ¿Quieres que te ayude a probar la API o prefieres continuar con algún otro aspecto del proyecto?
