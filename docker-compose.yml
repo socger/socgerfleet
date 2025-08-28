@@ -6,10 +6,10 @@ services:
     container_name: socgerfleet_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_ROOT_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
       MYSQL_DATABASE: socgerfleet
       MYSQL_USER: socger
-      MYSQL_PASSWORD: socger123
+      MYSQL_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
     ports:
       - "3306:3306"
     volumes:
@@ -17,6 +17,7 @@ services:
       - ./docker/mysql/init:/docker-entrypoint-initdb.d
     networks:
       - socgerfleet_network
+    command: --default-authentication-plugin=mysql_native_password
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -26,7 +27,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: root
-      PMA_PASSWORD: root123
+      PMA_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
     ports:
       - "8080:80"
     depends_on:
