@@ -1,3 +1,4 @@
+// This .js was created to be manually tested in case I needed to change a user's password hash in the DB.
 const bcrypt = require('bcryptjs');
 
 async function generateHash() {
