@@ -16,6 +16,7 @@ import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { RoleFiltersDto } from './dto/role-filters.dto';
 
 @Controller('roles')
 export class RolesController {
@@ -23,7 +24,7 @@ export class RolesController {
 
   @Get()
   async findAll(@Query() query: any) {
-    // Crear el DTO de paginación con valores por defecto
+    // Manejar paginación
     const paginationDto = new PaginationDto();
     paginationDto.page = query.page ? parseInt(query.page, 10) : 1;
     paginationDto.limit = query.limit ? parseInt(query.limit, 10) : 10;
@@ -33,10 +34,38 @@ export class RolesController {
     if (paginationDto.limit < 1) paginationDto.limit = 10;
     if (paginationDto.limit > 100) paginationDto.limit = 100;
 
-    const result = await this.rolesService.findAll(paginationDto);
+    // Crear filtros DTO
+    const filtersDto = new RoleFiltersDto();
+    if (query.search) filtersDto.search = query.search;
+    if (query.name) filtersDto.name = query.name;
+    if (query.description) filtersDto.description = query.description;
+    if (query.createdFrom) filtersDto.createdFrom = query.createdFrom;
+    if (query.createdTo) filtersDto.createdTo = query.createdTo;
+    if (query.minUsers !== undefined)
+      filtersDto.minUsers = parseInt(query.minUsers, 10);
+    if (query.maxUsers !== undefined)
+      filtersDto.maxUsers = parseInt(query.maxUsers, 10);
+    if (query.sortBy) filtersDto.sortBy = query.sortBy;
+    if (query.sortOrder) filtersDto.sortOrder = query.sortOrder;
+
+    const result = await this.rolesService.findAll(paginationDto, filtersDto);
+
     return {
       message: 'Lista de roles obtenida exitosamente',
       ...result,
+      filters: filtersDto, // Incluir filtros aplicados en la respuesta
+    };
+  }
+
+  @Get('search')
+  async search(@Query('q') searchTerm: string, @Query('limit') limit?: number) {
+    const results = await this.rolesService.search(
+      searchTerm,
+      limit ? parseInt(limit, 10) : 10,
+    );
+    return {
+      message: 'Búsqueda completada exitosamente',
+      data: results,
     };
   }
 
