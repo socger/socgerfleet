@@ -1,8 +1,5 @@
 ###
 # API Tests para SocgerFleet
-# Usar con la extensión RES# 5. LISTAR TODOS LOS USUARIOS (ADMIN)
-GET {{baseUrl}}/users
-Authorization: Bearer {{adminToken}}lient de VS Code
 ###
 
 # Variables
@@ -10,7 +7,7 @@ Authorization: Bearer {{adminToken}}lient de VS Code
 @contentType = application/json
 
 # Tokens
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MjQyNiwiZXhwIjoxNzU2NTY4ODI2fQ.9IuaHpKeE0JtloNVcdNT8McqDoe8FV2N6iWEpwthv4s
+@userToken  = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MjQyNiwiZXhwIjoxNzU2NTY4ODI2fQ.9IuaHpKeE0JtloNVcdNT8McqDoe8FV2N6iWEpwthv4s
 @adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNvY2dlcmZsZWV0LmNvbSIsInN1YiI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibmFtZSI6ImFkbWluIiwiZGVzY3JpcHRpb24iOiJBZG1pbmlzdHJhZG9yIGRlbCBzaXN0ZW1hIGNvbiB0b2RvcyBsb3MgcGVybWlzb3MiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjUzMjQ4MCwiZXhwIjoxNzU2NjE4ODgwfQ.NfngGVV3tupJ-sIXfD327gXGLh4fsabayelnsLOhlNk
 
 ###
@@ -62,17 +59,17 @@ Content-Type: {{contentType}}
 ###
 # 5. LISTAR TODOS LOS USUARIOS
 GET {{baseUrl}}/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MTg0OCwiZXhwIjoxNzU2NTY4MjQ4fQ.8kuKUnKX5vo0oayvFyxMLsaEhtIPZxI6dlML52q8GIE
+Authorization: Bearer {{adminToken}}
 
 ###
 # 6. OBTENER USUARIO POR ID
 GET {{baseUrl}}/users/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MTg0OCwiZXhwIjoxNzU2NTY4MjQ4fQ.8kuKUnKX5vo0oayvFyxMLsaEhtIPZxI6dlML52q8GIE
+Authorization: Bearer {{adminToken}}
 
 ###
-# 7. CREAR NUEVO USUARIO
+# 7. CREAR NUEVO USUARIO (ADMIN)
 POST {{baseUrl}}/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MjQyNiwiZXhwIjoxNzU2NTY4ODI2fQ.9IuaHpKeE0JtloNVcdNT8McqDoe8FV2N6iWEpwthv4s
+Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
 {
@@ -85,9 +82,9 @@ Content-Type: {{contentType}}
 }
 
 ###
-# 8. ACTUALIZAR USUARIO
+# 8. ACTUALIZAR USUARIO (ADMIN)
 PATCH {{baseUrl}}/users/2
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
 {
@@ -96,19 +93,19 @@ Content-Type: {{contentType}}
 }
 
 ###
-# 9. ASIGNAR ROL A USUARIO
+# 9. ASIGNAR ROL A USUARIO (ADMIN)
 POST {{baseUrl}}/users/2/roles/1
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 
 ###
-# 10. QUITAR ROL DE USUARIO
+# 10. QUITAR ROL DE USUARIO (ADMIN)
 DELETE {{baseUrl}}/users/2/roles/1
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 
 ###
-# 11. ELIMINAR USUARIO
-DELETE {{baseUrl}}/users/2
-Authorization: Bearer TU_TOKEN_AQUI
+# 11. ELIMINAR USUARIO (ADMIN)
+DELETE {{baseUrl}}/users/3
+Authorization: Bearer {{adminToken}}
 
 ###
 # 12. LISTAR TODOS LOS ROLES (ADMIN)
@@ -116,14 +113,14 @@ GET {{baseUrl}}/roles
 Authorization: Bearer {{adminToken}}
 
 ###
-# 13. OBTENER ROL POR ID
+# 13. OBTENER ROL POR ID (ADMIN)
 GET {{baseUrl}}/roles/1
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 
 ###
-# 14. CREAR NUEVO ROL
+# 14. CREAR NUEVO ROL (ADMIN)
 POST {{baseUrl}}/roles
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
 {
@@ -132,9 +129,9 @@ Content-Type: {{contentType}}
 }
 
 ###
-# 15. ACTUALIZAR ROL
+# 15. ACTUALIZAR ROL (ADMIN)
 PATCH {{baseUrl}}/roles/4
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
 {
@@ -142,9 +139,9 @@ Content-Type: {{contentType}}
 }
 
 ###
-# 16. ELIMINAR ROL
+# 16. ELIMINAR ROL (ADMIN)
 DELETE {{baseUrl}}/roles/4
-Authorization: Bearer TU_TOKEN_AQUI
+Authorization: Bearer {{adminToken}}
 
 ###
 # 17. VERIFICAR APLICACIÓN FUNCIONANDO
