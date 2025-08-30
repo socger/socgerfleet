@@ -2942,7 +2942,6 @@ A REALIZAR TODAVIA
   Añadir validaciones adicionales - Para mejorar la seguridad
   Implementar guards de roles específicos
   Agregar rate limiting
-  Implementar refresh tokens
 
 2. Funcionalidades adicionales:
   Logs de auditoría
@@ -2976,6 +2975,8 @@ A REALIZAR TODAVIA
 
 
 TRABAJANDO ACTUALMENTE EN:
+1. Mejoras de seguridad avanzadas:
+  Implementar refresh tokens
 
 
 
