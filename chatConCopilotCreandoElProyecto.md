@@ -2775,41 +2775,54 @@ Código fuente completo
 Configuración Docker
 Documentación del proceso
 Historial de desarrollo
-
-🚀 Próximos pasos opcionales:
-Crear un README.md profesional para el repositorio
-Probar los endpoints con herramientas como Postman
-Añadir tests unitarios
-Configurar CI/CD con GitHub Actions
 ------------------------------------------------------------------------------------------------------------------------
-Ahora que la base de datos está funcionando correctamente, podemos continuar con el desarrollo del proyecto socgerfleet.
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+A REALIZAR TODAVIA
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
-¿En qué te gustaría que te ayude ahora? Algunas opciones que podríamos trabajar:
+🎯 PROBADO:
+  Verificar que los datos iniciales se crearon correctamente en la base de datos
+  Probar el sistema de autenticación (login/register)
+  Revisar que los roles y permisos funcionen como esperado
+  La API / endpoints de roles y users
 
-Probar los endpoints de la API - Verificar que todos los endpoints funcionen correctamente
-Crear middleware global - Para manejo de errores y logging
-Implementar más funcionalidades - Como paginación, filtros, búsqueda, etc.
-Añadir validaciones adicionales - Para mejorar la seguridad
-Crear tests - Unitarios y de integración
-Documentar la API - Con Swagger/OpenAPI
-Configurar CORS - Para permitir conexiones desde el frontend
-Optimizar las consultas - Para mejor rendimiento
-También podríamos:
+🎯 Próximos pasos recomendados (OPCIONALES):
+0. Sin clasificar:
+  - COMPROBAR MÓDULO POR MÓDULO SI HAY FALLOS POR EL PRETTIER Y CORREGIRLOS
+  - Crear middleware global - Para manejo de errores y logging
+  - Configurar CORS - Para permitir conexiones desde el frontend
+  - Optimizar las consultas - Para mejor rendimiento
+  - Configurar CI/CD con GitHub Actions
+  - Probar los endpoints QUE SE HAYAN CREADO NUEVOS desde la última vez. 
+    Añadirlos al módulo "api-tests.http". O igual habría que crear varios .http para cada tabla de la BD
 
-Verificar que los datos iniciales se crearon correctamente en la base de datos
-Probar el sistema de autenticación (login/register)
-Revisar que los roles y permisos funcionen como esperado
+1. Mejoras de seguridad avanzadas:
+  Añadir validaciones adicionales - Para mejorar la seguridad
+  Implementar guards de roles específicos
+  Agregar rate limiting
+  Implementar refresh tokens
+
+2. Funcionalidades adicionales:
+  Paginación en listados
+  Filtros y búsqueda
+  Logs de auditoría
+  Notificaciones
+
+3. Documentación:
+  Documentar la API - Con Swagger/OpenAPI
+  Crear un README.md profesional y completo para el repositorio
+
+4. Testing:
+  Añadir tests unitarios
+  Añadir tests de integración
+
+5. Deployment:
+  Configuración para producción
+  Variables de entorno seguras
+  CI/CD pipeline
+
+
 Preparar el proyecto para producción
-------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-COMPROBAR MÓDULO POR MÓDULO SI HAY FALLOS POR EL PRETTIER Y CORREGIRLOS
-
-¿Te gustaría que te ayude con alguno de estos próximos pasos o tienes alguna pregunta sobre el proyecto?
-
-
-
-
-¿Quieres que te ayude a probar la API o prefieres continuar con algún otro aspecto del proyecto?
