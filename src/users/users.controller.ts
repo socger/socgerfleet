@@ -26,7 +26,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async findAll(@Query(ValidationPipe) paginationDto: PaginationDto) {
+  async findAll(@Query() query: any) {
+    // Crear el DTO de paginación con valores por defecto
+    const paginationDto = new PaginationDto();
+    paginationDto.page = query.page ? parseInt(query.page, 10) : 1;
+    paginationDto.limit = query.limit ? parseInt(query.limit, 10) : 10;
+
+    // Validar límites
+    if (paginationDto.page < 1) paginationDto.page = 1;
+    if (paginationDto.limit < 1) paginationDto.limit = 10;
+    if (paginationDto.limit > 100) paginationDto.limit = 100;
+
     const result = await this.usersService.findAll(paginationDto);
     return {
       message: 'Lista de usuarios obtenida exitosamente',

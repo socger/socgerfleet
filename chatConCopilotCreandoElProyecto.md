@@ -2783,13 +2783,39 @@ A REALIZAR TODAVIA
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
-🎯 PROBADO:
+🎯 Realizado/Probado:
   - Verificar que los datos iniciales se crearon correctamente en la base de datos
   - Probar el sistema de autenticación (login/register)
   - Revisar que los roles y permisos funcionen como esperado
   - La API / endpoints de roles y users
   - Comprobar módulo por módulo si hay fallos por el Prettier y corregirlos
+  - Creada la paginación para las entity de roles y usuarios.
+    Características de la paginación implementada:
+    ✅ Funcionalidades:
+    Parámetros opcionales: page y limit con valores por defecto
+    Validación: Página mínimo 1, límite entre 1-100
+    Metadatos completos: Total de registros, páginas totales, navegación
+    Ordenación: Usuarios por fecha de creación DESC, roles por nombre ASC
+    Seguridad: Las contraseñas siguen excluidas en las respuestas
+    
+    ✅ Respuesta de ejemplo:
+    {
+      "message": "Lista de usuarios obtenida exitosamente",
+      "data": [...],
+      "meta": {
+        "total": 25,
+        "page": 1,
+        "limit": 10,
+        "totalPages": 3,
+        "hasNextPage": true,
+        "hasPreviousPage": false
+      }
+    }
 
+    ✅ Cómo usar:
+    Sin parámetros: GET /users (página 1, 10 registros)
+    Con parámetros: GET /users?page=2&limit=5
+    Máximo 100 registros por página para evitar sobrecargas
 
 
 🎯 Próximos pasos recomendados (OPCIONALES):
@@ -2808,7 +2834,6 @@ A REALIZAR TODAVIA
   Implementar refresh tokens
 
 2. Funcionalidades adicionales:
-  Paginación en listados
   Filtros y búsqueda
   Logs de auditoría
   Notificaciones
@@ -2826,5 +2851,7 @@ A REALIZAR TODAVIA
   Variables de entorno seguras
   CI/CD pipeline
 
+6. Preparar el proyecto para producción
 
-Preparar el proyecto para producción
+
+TRABAJANDO ACTUALMENTE EN:

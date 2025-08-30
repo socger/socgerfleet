@@ -10,14 +10,18 @@ export class PaginationResultDto<T> {
   };
 
   constructor(data: T[], total: number, page: number, limit: number) {
+    // Asegurar que page y limit son números
+    const numPage = typeof page === 'string' ? parseInt(page, 10) : page;
+    const numLimit = typeof limit === 'string' ? parseInt(limit, 10) : limit;
+
     this.data = data;
     this.meta = {
       total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-      hasNextPage: page < Math.ceil(total / limit),
-      hasPreviousPage: page > 1,
+      page: numPage,
+      limit: numLimit,
+      totalPages: Math.ceil(total / numLimit),
+      hasNextPage: numPage < Math.ceil(total / numLimit),
+      hasPreviousPage: numPage > 1,
     };
   }
 }
