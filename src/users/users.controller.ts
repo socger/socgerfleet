@@ -64,11 +64,10 @@ export class UsersController {
   }
 
   @Get('search')
-  async search(@Query('q') searchTerm: string, @Query('limit') limit?: number) {
-    const results = await this.usersService.search(
-      searchTerm,
-      limit ? parseInt(limit, 10) : 10,
-    );
+  async search(@Query('q') searchTerm: string, @Query('limit') limit?: string) {
+    const parsedLimit = limit ? parseInt(limit, 10) : 10;
+    const results = await this.usersService.search(searchTerm, parsedLimit);
+
     return {
       message: 'Búsqueda completada exitosamente',
       data: results,
