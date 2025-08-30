@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
@@ -16,8 +20,8 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
-    
-    if (user && await bcrypt.compare(password, user.password)) {
+
+    if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
       return result;
     }
@@ -26,7 +30,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto) {
     const user = await this.validateUser(loginDto.email, loginDto.password);
-    
+
     if (!user) {
       throw new UnauthorizedException('Credenciales inválidas');
     }
@@ -53,12 +57,18 @@ export class AuthService {
 
   async register(registerDto: RegisterDto) {
     // Verificar si el usuario ya existe
-    const existingUserByEmail = await this.usersService.findByEmail(registerDto.email);
+    const existingUserByEmail = await this.usersService.findByEmail(
+      registerDto.email,
+    );
+
     if (existingUserByEmail) {
       throw new ConflictException('El email ya está registrado');
     }
 
-    const existingUserByUsername = await this.usersService.findByUsername(registerDto.username);
+    const existingUserByUsername = await this.usersService.findByUsername(
+      registerDto.username,
+    );
+
     if (existingUserByUsername) {
       throw new ConflictException('El nombre de usuario ya está en uso');
     }
@@ -72,7 +82,7 @@ export class AuthService {
       // Si no existe el rol 'user', lo creamos
       defaultRole = await this.rolesService.create({
         name: 'user',
-        description: 'Usuario básico del sistema'
+        description: 'Usuario básico del sistema',
       });
     }
 
