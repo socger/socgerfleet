@@ -14,6 +14,7 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Query,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -64,13 +65,11 @@ export class UsersController {
   }
 
   @Get('search')
-  async search(@Query('q') searchTerm: string, @Query('limit') limit?: string) {
-    const parsedLimit =
-      limit && !isNaN(Number(limit))
-        ? Math.max(1, Math.min(100, parseInt(limit, 10))) // Ensure reasonable bounds
-        : 10;
-
-    const results = await this.usersService.search(searchTerm, parsedLimit);
+  async search(
+    @Query('q') searchTerm: string,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    const results = await this.usersService.search(searchTerm, limit);
 
     return {
       message: 'Búsqueda completada exitosamente',
