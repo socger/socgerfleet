@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import * as bcrypt from 'bcryptjs';
@@ -17,7 +17,15 @@ export class UsersService {
   async findAll(): Promise<User[]> {
     return this.userRepository.find({
       relations: ['roles'],
-      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt'],
+      select: [
+        'id',
+        'username',
+        'email',
+        'firstName',
+        'lastName',
+        'isActive',
+        'createdAt',
+      ],
     });
   }
 
@@ -25,7 +33,15 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['roles'],
-      select: ['id', 'username', 'email', 'firstName', 'lastName', 'isActive', 'createdAt'],
+      select: [
+        'id',
+        'username',
+        'email',
+        'firstName',
+        'lastName',
+        'isActive',
+        'createdAt',
+      ],
     });
 
     if (!user) {
@@ -68,7 +84,9 @@ export class UsersService {
     });
 
     if (userData.roleIds && userData.roleIds.length > 0) {
-      const roles = await this.roleRepository.findByIds(userData.roleIds);
+      const roles = await this.roleRepository.find({
+        where: { id: In(userData.roleIds) },
+      });
       user.roles = roles;
     }
 
@@ -100,7 +118,9 @@ export class UsersService {
     Object.assign(user, updateData);
 
     if (updateData.roleIds) {
-      const roles = await this.roleRepository.findByIds(updateData.roleIds);
+      const roles = await this.roleRepository.find({
+        where: { id: In(updateData.roleIds) },
+      });
       user.roles = roles;
     }
 
@@ -130,7 +150,8 @@ export class UsersService {
       throw new NotFoundException(`Rol con ID ${roleId} no encontrado`);
     }
 
-    if (!user.roles.some(r => r.id === roleId)) {
+    // Arreglado: paréntesis en arrow function
+    if (!user.roles.some((r) => r.id === roleId)) {
       user.roles.push(role);
       await this.userRepository.save(user);
     }
@@ -148,7 +169,8 @@ export class UsersService {
       throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
     }
 
-    user.roles = user.roles.filter(role => role.id !== roleId);
+    // Arreglado: paréntesis en arrow function
+    user.roles = user.roles.filter((role) => role.id !== roleId);
     await this.userRepository.save(user);
 
     return this.findOne(userId);
