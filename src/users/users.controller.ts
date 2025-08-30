@@ -65,7 +65,11 @@ export class UsersController {
 
   @Get('search')
   async search(@Query('q') searchTerm: string, @Query('limit') limit?: string) {
-    const parsedLimit = limit ? parseInt(limit, 10) : 10;
+    const parsedLimit =
+      limit && !isNaN(Number(limit))
+        ? Math.max(1, Math.min(100, parseInt(limit, 10))) // Ensure reasonable bounds
+        : 10;
+
     const results = await this.usersService.search(searchTerm, parsedLimit);
 
     return {
