@@ -1,5 +1,5 @@
 ###
-# API Tests para SocgerFleet - CON PAGINACIÓN
+# API Tests para SocgerFleet - CON PAGINACION, FILTROS Y BÚSQUEDA
 ###
 
 # Variables
@@ -170,3 +170,112 @@ Authorization: Bearer {{adminToken}}
 ###
 # 17. VERIFICAR APLICACIÓN FUNCIONANDO
 GET {{baseUrl}}
+
+###
+# NUEVOS ENDPOINTS CON FILTROS Y BÚSQUEDA - USUARIOS
+###
+
+###
+# 18. BUSCAR USUARIOS - Búsqueda general
+GET {{baseUrl}}/users?search=admin
+Authorization: Bearer {{adminToken}}
+
+###
+# 19. FILTRAR USUARIOS - Por username
+GET {{baseUrl}}/users?username=test
+Authorization: Bearer {{adminToken}}
+
+###
+# 20. FILTRAR USUARIOS - Por email
+GET {{baseUrl}}/users?email=admin@socger
+Authorization: Bearer {{adminToken}}
+
+###
+# 21. FILTRAR USUARIOS - Por nombre completo
+GET {{baseUrl}}/users?firstName=Usuario&lastName=Prueba
+Authorization: Bearer {{adminToken}}
+
+###
+# 22. FILTRAR USUARIOS - Por estado activo
+GET {{baseUrl}}/users?isActive=true
+Authorization: Bearer {{adminToken}}
+
+###
+# 23. FILTRAR USUARIOS - Por rol específico
+GET {{baseUrl}}/users?roleName=admin
+Authorization: Bearer {{adminToken}}
+
+###
+# 24. FILTRAR USUARIOS - Por ID de rol
+GET {{baseUrl}}/users?roleId=1
+Authorization: Bearer {{adminToken}}
+
+###
+# 25. FILTRAR USUARIOS - Por rango de fechas
+GET {{baseUrl}}/users?createdFrom=2025-08-28&createdTo=2025-08-30
+Authorization: Bearer {{adminToken}}
+
+###
+# 26. FILTRAR USUARIOS - Ordenar por username ASC
+GET {{baseUrl}}/users?sortBy=username&sortOrder=ASC
+Authorization: Bearer {{adminToken}}
+
+###
+# 27. FILTRAR USUARIOS - Combinación de filtros
+GET {{baseUrl}}/users?search=test&isActive=true&sortBy=createdAt&sortOrder=DESC&page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+###
+# 28. BÚSQUEDA RÁPIDA DE USUARIOS
+GET {{baseUrl}}/users/search?q=admin&limit=5
+Authorization: Bearer {{adminToken}}
+
+###
+# NUEVOS ENDPOINTS DE FILTROS PARA ROLES
+###
+
+###
+# 29. BUSCAR ROLES - Búsqueda general
+GET {{baseUrl}}/roles?search=admin
+Authorization: Bearer {{adminToken}}
+
+###
+# 30. FILTRAR ROLES - Por nombre específico
+GET {{baseUrl}}/roles?name=admin
+Authorization: Bearer {{adminToken}}
+
+###
+# 31. FILTRAR ROLES - Por descripción
+GET {{baseUrl}}/roles?description=sistema
+Authorization: Bearer {{adminToken}}
+
+###
+# 32. FILTRAR ROLES - Por rango de fechas
+GET {{baseUrl}}/roles?createdFrom=2025-08-28&createdTo=2025-08-30
+Authorization: Bearer {{adminToken}}
+
+###
+# 33. FILTRAR ROLES - Por cantidad mínima de usuarios
+GET {{baseUrl}}/roles?minUsers=1
+Authorization: Bearer {{adminToken}}
+
+###
+# 34. FILTRAR ROLES - Por cantidad máxima de usuarios
+GET {{baseUrl}}/roles?maxUsers=2
+Authorization: Bearer {{adminToken}}
+
+###
+# 35. FILTRAR ROLES - Ordenar por cantidad de usuarios
+GET {{baseUrl}}/roles?sortBy=userCount&sortOrder=DESC
+Authorization: Bearer {{adminToken}}
+
+###
+# 36. FILTRAR ROLES - Combinación de filtros
+GET {{baseUrl}}/roles?search=user&minUsers=1&sortBy=name&sortOrder=ASC&page=1&limit=10
+Authorization: Bearer {{adminToken}}
+
+###
+# 37. BÚSQUEDA RÁPIDA DE ROLES
+GET {{baseUrl}}/roles/search?q=admin&limit=3
+Authorization: Bearer {{adminToken}}
+
