@@ -41,8 +41,8 @@ ON DUPLICATE KEY UPDATE description = VALUES(description);
 -- Insertar usuario administrador por defecto
 -- Contraseña: admin123 (hasheada con bcrypt)
 INSERT INTO users (username, email, password, first_name, last_name) VALUES 
-('admin', 'admin@socgerfleet.com', '$2b$10$rOZJlUHbJlU4YxY4A6jgG.GvHaGm6JWrOKNgJZKjUhB5LZjNJX2Y.', 'Admin', 'User')
-ON DUPLICATE KEY UPDATE email = VALUES(email);
+('admin', 'admin@socgerfleet.com', '$2b$10$Pk9WQXt1r9enXJJccHAw6u2tuFg/HRsyMsI3pB9zCfHhdCvGySF1a', 'Admin', 'User')
+ON DUPLICATE KEY UPDATE password = VALUES(password);
 
 -- Asignar rol de admin al usuario admin
 INSERT INTO user_roles (user_id, role_id) 
