@@ -118,7 +118,7 @@ Authorization: Bearer {{adminToken}}
 
 ###
 # 11. ELIMINAR USUARIO (ADMIN)
-DELETE {{baseUrl}}/users/3
+DELETE {{baseUrl}}/users/4
 Authorization: Bearer {{adminToken}}
 
 ###
@@ -154,7 +154,7 @@ Content-Type: {{contentType}}
 
 ###
 # 15. ACTUALIZAR ROL (ADMIN)
-PATCH {{baseUrl}}/roles/4
+PATCH {{baseUrl}}/roles/7
 Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
@@ -164,7 +164,7 @@ Content-Type: {{contentType}}
 
 ###
 # 16. ELIMINAR ROL (ADMIN)
-DELETE {{baseUrl}}/roles/4
+DELETE {{baseUrl}}/roles/7
 Authorization: Bearer {{adminToken}}
 
 ###
