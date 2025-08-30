@@ -10,20 +10,23 @@ import {
   HttpStatus,
   ValidationPipe,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Get()
-  async findAll() {
+  async findAll(@Query(ValidationPipe) paginationDto: PaginationDto) {
+    const result = await this.rolesService.findAll(paginationDto);
     return {
       message: 'Lista de roles obtenida exitosamente',
-      data: await this.rolesService.findAll(),
+      ...result,
     };
   }
 

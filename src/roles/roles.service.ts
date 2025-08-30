@@ -1,13 +1,11 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from '../entities/role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginationResultDto } from '../common/dto/pagination-result.dto';
 
 @Injectable()
 export class RolesService {
@@ -16,9 +14,15 @@ export class RolesService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async findAll(): Promise<Role[]> {
-    return this.roleRepository.find({
+  async findAll(paginationDto: PaginationDto): Promise<PaginationResultDto<Role>> {
+    const { page, limit } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [roles, total] = await this.roleRepository.findAndCount({
       relations: ['users'],
+      skip,
+      take: limit,
+      order: { name: 'ASC' },
       select: {
         id: true,
         name: true,
@@ -37,6 +41,8 @@ export class RolesService {
         },
       },
     });
+
+    return new PaginationResultDto(roles, total, page, limit);
   }
 
   async findOne(id: number): Promise<Role> {
@@ -73,16 +79,30 @@ export class RolesService {
     return this.roleRepository.findOne({
       where: { name },
       relations: ['users'],
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        users: {
+          id: true,
+          username: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     });
   }
 
   async create(createRoleDto: CreateRoleDto): Promise<Role> {
-    // Verificar si ya existe un rol con ese nombre
     const existingRole = await this.findByName(createRoleDto.name);
     if (existingRole) {
-      throw new ConflictException(
-        `Ya existe un rol con el nombre "${createRoleDto.name}"`,
-      );
+      throw new ConflictException(`Ya existe un rol con el nombre "${createRoleDto.name}"`);
     }
 
     const role = this.roleRepository.create(createRoleDto);
@@ -92,13 +112,10 @@ export class RolesService {
   async update(id: number, updateRoleDto: UpdateRoleDto): Promise<Role> {
     const role = await this.findOne(id);
 
-    // Si se está actualizando el nombre, verificar que no exista otro rol con ese nombre
     if (updateRoleDto.name && updateRoleDto.name !== role.name) {
       const existingRole = await this.findByName(updateRoleDto.name);
       if (existingRole) {
-        throw new ConflictException(
-          `Ya existe un rol con el nombre "${updateRoleDto.name}"`,
-        );
+        throw new ConflictException(`Ya existe un rol con el nombre "${updateRoleDto.name}"`);
       }
     }
 

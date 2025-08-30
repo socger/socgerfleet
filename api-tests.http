@@ -1,5 +1,5 @@
 ###
-# API Tests para SocgerFleet
+# API Tests para SocgerFleet - CON PAGINACIÓN
 ###
 
 # Variables
@@ -45,7 +45,6 @@ Content-Type: {{contentType}}
 
 ###
 # 4. OBTENER PERFIL (requiere token)
-# Token obtenido del registro/login
 POST {{baseUrl}}/auth/profile
 Authorization: Bearer {{userToken}}
 Content-Type: {{contentType}}
@@ -57,8 +56,23 @@ Authorization: Bearer {{adminToken}}
 Content-Type: {{contentType}}
 
 ###
-# 5. LISTAR TODOS LOS USUARIOS
+# 5. LISTAR TODOS LOS USUARIOS (con paginación por defecto)
 GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+
+###
+# 5a. LISTAR USUARIOS - Primera página, 5 por página
+GET {{baseUrl}}/users?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+###
+# 5b. LISTAR USUARIOS - Segunda página, 5 por página
+GET {{baseUrl}}/users?page=2&limit=5
+Authorization: Bearer {{adminToken}}
+
+###
+# 5c. LISTAR USUARIOS - Página específica con límite personalizado
+GET {{baseUrl}}/users?page=1&limit=2
 Authorization: Bearer {{adminToken}}
 
 ###
@@ -108,8 +122,18 @@ DELETE {{baseUrl}}/users/3
 Authorization: Bearer {{adminToken}}
 
 ###
-# 12. LISTAR TODOS LOS ROLES (ADMIN)
+# 12. LISTAR TODOS LOS ROLES (con paginación por defecto)
 GET {{baseUrl}}/roles
+Authorization: Bearer {{adminToken}}
+
+###
+# 12a. LISTAR ROLES - Primera página, 2 por página
+GET {{baseUrl}}/roles?page=1&limit=2
+Authorization: Bearer {{adminToken}}
+
+###
+# 12b. LISTAR ROLES - Segunda página, 2 por página
+GET {{baseUrl}}/roles?page=2&limit=2
 Authorization: Bearer {{adminToken}}
 
 ###

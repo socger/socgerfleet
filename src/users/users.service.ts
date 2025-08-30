@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
+import { PaginationDto } from '../common/dto/pagination.dto';
+import { PaginationResultDto } from '../common/dto/pagination-result.dto';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -14,8 +16,11 @@ export class UsersService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository.find({
+  async findAll(paginationDto: PaginationDto): Promise<PaginationResultDto<User>> {
+    const { page, limit } = paginationDto;
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await this.userRepository.findAndCount({
       relations: ['roles'],
       select: [
         'id',
@@ -26,7 +31,12 @@ export class UsersService {
         'isActive',
         'createdAt',
       ],
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
     });
+
+    return new PaginationResultDto(users, total, page, limit);
   }
 
   async findOne(id: number): Promise<User> {
@@ -150,7 +160,6 @@ export class UsersService {
       throw new NotFoundException(`Rol con ID ${roleId} no encontrado`);
     }
 
-    // Arreglado: paréntesis en arrow function
     if (!user.roles.some((r) => r.id === roleId)) {
       user.roles.push(role);
       await this.userRepository.save(user);
@@ -169,7 +178,6 @@ export class UsersService {
       throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
     }
 
-    // Arreglado: paréntesis en arrow function
     user.roles = user.roles.filter((role) => role.id !== roleId);
     await this.userRepository.save(user);
 
