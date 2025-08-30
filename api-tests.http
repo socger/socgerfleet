@@ -112,8 +112,23 @@ POST {{baseUrl}}/users/2/roles/1
 Authorization: Bearer {{adminToken}}
 
 ###
+# 9b. INTENTAR ASIGNAR EL MISMO ROL
+POST {{baseUrl}}/users/2/roles/1
+Authorization: Bearer {{adminToken}}
+
+###
 # 10. QUITAR ROL DE USUARIO (ADMIN)
 DELETE {{baseUrl}}/users/2/roles/1
+Authorization: Bearer {{adminToken}}
+
+###
+# 10b. INTENTAR QUITAR ROL QUE NO TIENE
+DELETE {{baseUrl}}/users/2/roles/1
+Authorization: Bearer {{adminToken}}
+
+###
+# 10c. INTENTAR QUITAR ROL QUE NO EXISTE
+DELETE {{baseUrl}}/users/2/roles/999
 Authorization: Bearer {{adminToken}}
 
 ###
