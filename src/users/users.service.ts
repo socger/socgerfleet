@@ -305,42 +305,60 @@ export class UsersService {
   }
 
   async assignRole(userId: number, roleId: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['roles'],
+    // Obtener usuario con sus roles
+    const user = await this.findOne(userId);
+
+    // Verificar que el rol existe
+    const role = await this.roleRepository.findOne({
+      where: { id: roleId },
     });
-
-    if (!user) {
-      throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
-    }
-
-    const role = await this.roleRepository.findOne({ where: { id: roleId } });
 
     if (!role) {
       throw new NotFoundException(`Rol con ID ${roleId} no encontrado`);
     }
 
-    if (!user.roles.some((r) => r.id === roleId)) {
-      user.roles.push(role);
-      await this.userRepository.save(user);
+    // Verificar que el usuario no tiene ya este rol
+    const alreadyHasRole = user.roles.some(
+      (userRole) => userRole.id === roleId,
+    );
+
+    if (alreadyHasRole) {
+      throw new ConflictException(
+        `El usuario ya tiene asignado el rol "${role.name}"`,
+      );
     }
 
-    return this.findOne(userId);
+    // Asignar el nuevo rol
+    user.roles.push(role);
+
+    return this.userRepository.save(user);
   }
 
   async removeRole(userId: number, roleId: number): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['roles'],
-    });
+    // Obtener usuario con sus roles
+    const user = await this.findOne(userId);
 
-    if (!user) {
-      throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
+    // Verificar que el usuario tiene el rol que se quiere remover
+    const hasRole = user.roles.some((role) => role.id === roleId);
+
+    if (!hasRole) {
+      throw new NotFoundException(
+        `El usuario no tiene asignado el rol con ID ${roleId}`,
+      );
     }
 
-    user.roles = user.roles.filter((role) => role.id !== roleId);
-    await this.userRepository.save(user);
+    // Verificar que el rol existe (opcional, pero recomendable)
+    const roleToRemove = await this.roleRepository.findOne({
+      where: { id: roleId },
+    });
 
-    return this.findOne(userId);
+    if (!roleToRemove) {
+      throw new NotFoundException(`Rol con ID ${roleId} no encontrado`);
+    }
+
+    // Filtrar el rol que se quiere remover
+    user.roles = user.roles.filter((role) => role.id !== roleId);
+
+    return this.userRepository.save(user);
   }
 }
