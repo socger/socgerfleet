@@ -1,0 +1,151 @@
+###
+# API Tests para SocgerFleet
+# Usar con la extensión RES# 5. LISTAR TODOS LOS USUARIOS (ADMIN)
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}lient de VS Code
+###
+
+# Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+# Tokens
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MjQyNiwiZXhwIjoxNzU2NTY4ODI2fQ.9IuaHpKeE0JtloNVcdNT8McqDoe8FV2N6iWEpwthv4s
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNvY2dlcmZsZWV0LmNvbSIsInN1YiI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibmFtZSI6ImFkbWluIiwiZGVzY3JpcHRpb24iOiJBZG1pbmlzdHJhZG9yIGRlbCBzaXN0ZW1hIGNvbiB0b2RvcyBsb3MgcGVybWlzb3MiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjUzMjQ4MCwiZXhwIjoxNzU2NjE4ODgwfQ.NfngGVV3tupJ-sIXfD327gXGLh4fsabayelnsLOhlNk
+
+###
+# 1. REGISTRO DE USUARIO
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "testuser",
+  "email": "test@socgerfleet.com",
+  "password": "123456",
+  "firstName": "Usuario",
+  "lastName": "Prueba"
+}
+
+###
+# 2. LOGIN DE USUARIO
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "test@socgerfleet.com",
+  "password": "123456"
+}
+
+###
+# 3. LOGIN ADMIN (usuario por defecto)
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@socgerfleet.com",
+  "password": "admin123"
+}
+
+###
+# 4. OBTENER PERFIL (requiere token)
+# Token obtenido del registro/login
+POST {{baseUrl}}/auth/profile
+Authorization: Bearer {{userToken}}
+Content-Type: {{contentType}}
+
+###
+# 4b. OBTENER PERFIL ADMIN
+POST {{baseUrl}}/auth/profile
+Authorization: Bearer {{adminToken}}
+Content-Type: {{contentType}}
+
+###
+# 5. LISTAR TODOS LOS USUARIOS
+GET {{baseUrl}}/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MTg0OCwiZXhwIjoxNzU2NTY4MjQ4fQ.8kuKUnKX5vo0oayvFyxMLsaEhtIPZxI6dlML52q8GIE
+
+###
+# 6. OBTENER USUARIO POR ID
+GET {{baseUrl}}/users/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MTg0OCwiZXhwIjoxNzU2NTY4MjQ4fQ.8kuKUnKX5vo0oayvFyxMLsaEhtIPZxI6dlML52q8GIE
+
+###
+# 7. CREAR NUEVO USUARIO
+POST {{baseUrl}}/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAc29jZ2VyZmxlZXQuY29tIiwic3ViIjoyLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwicm9sZXMiOlt7ImlkIjoyLCJuYW1lIjoidXNlciIsImRlc2NyaXB0aW9uIjoiVXN1YXJpbyBiw4PCoXNpY28gZGVsIHNpc3RlbWEiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjQ4MjQyNiwiZXhwIjoxNzU2NTY4ODI2fQ.9IuaHpKeE0JtloNVcdNT8McqDoe8FV2N6iWEpwthv4s
+Content-Type: {{contentType}}
+
+{
+  "username": "nuevouser",
+  "email": "nuevo@socgerfleet.com",
+  "password": "123456",
+  "firstName": "Nuevo",
+  "lastName": "Usuario",
+  "roleIds": [2]
+}
+
+###
+# 8. ACTUALIZAR USUARIO
+PATCH {{baseUrl}}/users/2
+Authorization: Bearer TU_TOKEN_AQUI
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Nombre Actualizado",
+  "isActive": true
+}
+
+###
+# 9. ASIGNAR ROL A USUARIO
+POST {{baseUrl}}/users/2/roles/1
+Authorization: Bearer TU_TOKEN_AQUI
+
+###
+# 10. QUITAR ROL DE USUARIO
+DELETE {{baseUrl}}/users/2/roles/1
+Authorization: Bearer TU_TOKEN_AQUI
+
+###
+# 11. ELIMINAR USUARIO
+DELETE {{baseUrl}}/users/2
+Authorization: Bearer TU_TOKEN_AQUI
+
+###
+# 12. LISTAR TODOS LOS ROLES (ADMIN)
+GET {{baseUrl}}/roles
+Authorization: Bearer {{adminToken}}
+
+###
+# 13. OBTENER ROL POR ID
+GET {{baseUrl}}/roles/1
+Authorization: Bearer TU_TOKEN_AQUI
+
+###
+# 14. CREAR NUEVO ROL
+POST {{baseUrl}}/roles
+Authorization: Bearer TU_TOKEN_AQUI
+Content-Type: {{contentType}}
+
+{
+  "name": "editor",
+  "description": "Editor de contenido"
+}
+
+###
+# 15. ACTUALIZAR ROL
+PATCH {{baseUrl}}/roles/4
+Authorization: Bearer TU_TOKEN_AQUI
+Content-Type: {{contentType}}
+
+{
+  "description": "Editor de contenido actualizado"
+}
+
+###
+# 16. ELIMINAR ROL
+DELETE {{baseUrl}}/roles/4
+Authorization: Bearer TU_TOKEN_AQUI
+
+###
+# 17. VERIFICAR APLICACIÓN FUNCIONANDO
+GET {{baseUrl}}
