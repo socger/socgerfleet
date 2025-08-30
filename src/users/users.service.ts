@@ -1,12 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, SelectQueryBuilder } from 'typeorm';
+import { Repository, In, SelectQueryBuilder } from 'typeorm'; // Añadir SelectQueryBuilder
+import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { PaginationResultDto } from '../common/dto/pagination-result.dto';
 import { UserFiltersDto } from './dto/user-filters.dto';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -196,68 +202,101 @@ export class UsersService {
     });
   }
 
-  async create(userData: {
-    username: string;
-    email: string;
-    password: string;
-    firstName?: string;
-    lastName?: string;
-    roleIds?: number[];
-  }): Promise<User> {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    const user = this.userRepository.create({
-      username: userData.username,
-      email: userData.email,
-      password: hashedPassword,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    // VALIDAR DUPLICADOS ANTES DE CREAR
+    const existingEmail = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
     });
 
-    if (userData.roleIds && userData.roleIds.length > 0) {
-      const roles = await this.roleRepository.find({
-        where: { id: In(userData.roleIds) },
-      });
-      user.roles = roles;
+    if (existingEmail) {
+      throw new ConflictException(`El email ya está registrado`);
     }
 
-    await this.userRepository.save(user);
+    const existingUsername = await this.userRepository.findOne({
+      where: { username: createUserDto.username },
+    });
 
-    return this.findOne(user.id);
+    if (existingUsername) {
+      throw new ConflictException(`El username ya está en uso`);
+    }
+
+    // Obtener roles si se proporcionan
+    let roles: Role[] = [];
+    if (createUserDto.roleIds && createUserDto.roleIds.length > 0) {
+      roles = await this.roleRepository.findBy({
+        id: In(createUserDto.roleIds),
+      });
+
+      if (roles.length !== createUserDto.roleIds.length) {
+        throw new NotFoundException('Uno o más roles no existen');
+      }
+    } else {
+      // Asignar rol 'user' por defecto si no se especifica
+      const defaultRole = await this.roleRepository.findOne({
+        where: { name: 'user' },
+      });
+      if (defaultRole) {
+        roles = [defaultRole];
+      }
+    }
+
+    // Hashear contraseña
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+    // Crear usuario
+    const user = this.userRepository.create({
+      ...createUserDto,
+      password: hashedPassword,
+      roles,
+    });
+
+    return this.userRepository.save(user);
   }
 
-  async update(
-    id: number,
-    updateData: {
-      username?: string;
-      email?: string;
-      firstName?: string;
-      lastName?: string;
-      isActive?: boolean;
-      roleIds?: number[];
-    },
-  ): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['roles'],
-    });
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.findOne(id);
 
-    if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    // VALIDAR DUPLICADOS SI SE CAMBIA EMAIL O USERNAME
+    if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const existingEmail = await this.userRepository.findOne({
+        where: { email: updateUserDto.email },
+      });
+      if (existingEmail) {
+        throw new ConflictException(`El email ya está registrado`);
+      }
     }
 
-    Object.assign(user, updateData);
-
-    if (updateData.roleIds) {
-      const roles = await this.roleRepository.find({
-        where: { id: In(updateData.roleIds) },
+    if (updateUserDto.username && updateUserDto.username !== user.username) {
+      const existingUsername = await this.userRepository.findOne({
+        where: { username: updateUserDto.username },
       });
+      if (existingUsername) {
+        throw new ConflictException(`El username ya está en uso`);
+      }
+    }
+
+    // Hashear nueva contraseña si se proporciona
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
+
+    // Manejar actualización de roles si se proporcionan
+    if (updateUserDto.roleIds) {
+      const roles = await this.roleRepository.findBy({
+        id: In(updateUserDto.roleIds),
+      });
+
+      if (roles.length !== updateUserDto.roleIds.length) {
+        throw new NotFoundException('Uno o más roles no existen');
+      }
+
       user.roles = roles;
     }
 
-    await this.userRepository.save(user);
+    // Aplicar otros cambios
+    Object.assign(user, updateUserDto);
 
-    return this.findOne(id);
+    return this.userRepository.save(user);
   }
 
   async remove(id: number): Promise<void> {
