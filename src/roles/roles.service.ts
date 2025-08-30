@@ -49,14 +49,15 @@ export class RolesService {
     // Aplicar filtros
     this.applyRoleFilters(queryBuilder, filtersDto);
 
-    // Aplicar ordenación
+    // Aplicar ordenación - SIMPLIFICAR
     if (filtersDto?.sortBy) {
       if (filtersDto.sortBy === 'userCount') {
-        // Para ordenar por cantidad de usuarios, necesitamos usar HAVING
-        queryBuilder
-          .groupBy('role.id')
-          .addGroupBy('user.id')
-          .orderBy('COUNT(user.id)', filtersDto.sortOrder || 'ASC');
+        // Para ordenar por cantidad de usuarios, usar subconsulta
+        queryBuilder.addSelect(
+          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id)',
+          'userCount',
+        );
+        queryBuilder.orderBy('userCount', filtersDto.sortOrder || 'ASC');
       } else {
         const sortField = `role.${filtersDto.sortBy}`;
         queryBuilder.orderBy(sortField, filtersDto.sortOrder || 'ASC');
@@ -65,12 +66,14 @@ export class RolesService {
       queryBuilder.orderBy('role.name', 'ASC');
     }
 
-    // Obtener total y datos paginados
-    const total = await this.roleRepository
-      .createQueryBuilder('role')
-      .where(this.buildWhereClause(filtersDto))
-      .getCount();
+    // Obtener total sin paginación
+    const countQueryBuilder = this.roleRepository.createQueryBuilder('role');
 
+    // Aplicar los mismos filtros para el conteo
+    this.applyRoleFiltersForCount(countQueryBuilder, filtersDto);
+    const total = await countQueryBuilder.getCount();
+
+    // Obtener datos paginados
     const roles = await queryBuilder.skip(skip).take(limit).getMany();
 
     return new PaginationResultDto(roles, total, page, limit);
@@ -117,18 +120,23 @@ export class RolesService {
       });
     }
 
-    // Filtro por cantidad mínima de usuarios
-    if (filters.minUsers !== undefined) {
-      queryBuilder
-        .groupBy('role.id')
-        .having('COUNT(user.id) >= :minUsers', { minUsers: filters.minUsers });
-    }
+    // CORREGIR: Filtros por cantidad de usuarios
+    // Solo aplicar GROUP BY y HAVING si hay filtros de usuarios
+    if (filters.minUsers !== undefined || filters.maxUsers !== undefined) {
+      // Usar subconsulta para contar usuarios
+      if (filters.minUsers !== undefined) {
+        queryBuilder.andWhere(
+          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) >= :minUsers',
+          { minUsers: filters.minUsers },
+        );
+      }
 
-    // Filtro por cantidad máxima de usuarios
-    if (filters.maxUsers !== undefined) {
-      queryBuilder
-        .groupBy('role.id')
-        .having('COUNT(user.id) <= :maxUsers', { maxUsers: filters.maxUsers });
+      if (filters.maxUsers !== undefined) {
+        queryBuilder.andWhere(
+          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) <= :maxUsers',
+          { maxUsers: filters.maxUsers },
+        );
+      }
     }
   }
 
@@ -261,5 +269,59 @@ export class RolesService {
   async remove(id: number): Promise<void> {
     const role = await this.findOne(id);
     await this.roleRepository.remove(role);
+  }
+
+  private applyRoleFiltersForCount(
+    queryBuilder: SelectQueryBuilder<Role>,
+    filters?: RoleFiltersDto,
+  ): void {
+    if (!filters) return;
+
+    // Aplicar los mismos filtros pero sin JOIN para evitar duplicados en el conteo
+    if (filters.search) {
+      queryBuilder.andWhere(
+        '(role.name LIKE :search OR role.description LIKE :search)',
+        { search: `%${filters.search}%` },
+      );
+    }
+
+    if (filters.name) {
+      queryBuilder.andWhere('role.name LIKE :name', {
+        name: `%${filters.name}%`,
+      });
+    }
+
+    if (filters.description) {
+      queryBuilder.andWhere('role.description LIKE :description', {
+        description: `%${filters.description}%`,
+      });
+    }
+
+    if (filters.createdFrom) {
+      queryBuilder.andWhere('role.createdAt >= :createdFrom', {
+        createdFrom: new Date(filters.createdFrom + ' 00:00:00'),
+      });
+    }
+
+    if (filters.createdTo) {
+      queryBuilder.andWhere('role.createdAt <= :createdTo', {
+        createdTo: new Date(filters.createdTo + ' 23:59:59'),
+      });
+    }
+
+    // Filtros por cantidad de usuarios
+    if (filters.minUsers !== undefined) {
+      queryBuilder.andWhere(
+        '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) >= :minUsers',
+        { minUsers: filters.minUsers },
+      );
+    }
+
+    if (filters.maxUsers !== undefined) {
+      queryBuilder.andWhere(
+        '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) <= :maxUsers',
+        { maxUsers: filters.maxUsers },
+      );
+    }
   }
 }
