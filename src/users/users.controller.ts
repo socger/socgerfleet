@@ -19,6 +19,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { UserFiltersDto } from './dto/user-filters.dto';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -27,7 +28,7 @@ export class UsersController {
 
   @Get()
   async findAll(@Query() query: any) {
-    // Crear el DTO de paginación con valores por defecto
+    // Manejar paginación
     const paginationDto = new PaginationDto();
     paginationDto.page = query.page ? parseInt(query.page, 10) : 1;
     paginationDto.limit = query.limit ? parseInt(query.limit, 10) : 10;
@@ -37,10 +38,40 @@ export class UsersController {
     if (paginationDto.limit < 1) paginationDto.limit = 10;
     if (paginationDto.limit > 100) paginationDto.limit = 100;
 
-    const result = await this.usersService.findAll(paginationDto);
+    // Crear filtros DTO
+    const filtersDto = new UserFiltersDto();
+    if (query.search) filtersDto.search = query.search;
+    if (query.username) filtersDto.username = query.username;
+    if (query.email) filtersDto.email = query.email;
+    if (query.firstName) filtersDto.firstName = query.firstName;
+    if (query.lastName) filtersDto.lastName = query.lastName;
+    if (query.isActive !== undefined)
+      filtersDto.isActive = query.isActive === 'true';
+    if (query.roleName) filtersDto.roleName = query.roleName;
+    if (query.roleId) filtersDto.roleId = parseInt(query.roleId, 10);
+    if (query.createdFrom) filtersDto.createdFrom = query.createdFrom;
+    if (query.createdTo) filtersDto.createdTo = query.createdTo;
+    if (query.sortBy) filtersDto.sortBy = query.sortBy;
+    if (query.sortOrder) filtersDto.sortOrder = query.sortOrder;
+
+    const result = await this.usersService.findAll(paginationDto, filtersDto);
+
     return {
       message: 'Lista de usuarios obtenida exitosamente',
       ...result,
+      filters: filtersDto, // Incluir filtros aplicados en la respuesta
+    };
+  }
+
+  @Get('search')
+  async search(@Query('q') searchTerm: string, @Query('limit') limit?: number) {
+    const results = await this.usersService.search(
+      searchTerm,
+      limit ? parseInt(limit, 10) : 10,
+    );
+    return {
+      message: 'Búsqueda completada exitosamente',
+      data: results,
     };
   }
 
