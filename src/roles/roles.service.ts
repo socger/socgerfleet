@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from '../entities/role.entity';
@@ -15,6 +19,23 @@ export class RolesService {
   async findAll(): Promise<Role[]> {
     return this.roleRepository.find({
       relations: ['users'],
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        users: {
+          id: true,
+          username: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     });
   }
 
@@ -22,6 +43,23 @@ export class RolesService {
     const role = await this.roleRepository.findOne({
       where: { id },
       relations: ['users'],
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        users: {
+          id: true,
+          username: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     });
 
     if (!role) {
@@ -42,7 +80,9 @@ export class RolesService {
     // Verificar si ya existe un rol con ese nombre
     const existingRole = await this.findByName(createRoleDto.name);
     if (existingRole) {
-      throw new ConflictException(`Ya existe un rol con el nombre "${createRoleDto.name}"`);
+      throw new ConflictException(
+        `Ya existe un rol con el nombre "${createRoleDto.name}"`,
+      );
     }
 
     const role = this.roleRepository.create(createRoleDto);
@@ -56,7 +96,9 @@ export class RolesService {
     if (updateRoleDto.name && updateRoleDto.name !== role.name) {
       const existingRole = await this.findByName(updateRoleDto.name);
       if (existingRole) {
-        throw new ConflictException(`Ya existe un rol con el nombre "${updateRoleDto.name}"`);
+        throw new ConflictException(
+          `Ya existe un rol con el nombre "${updateRoleDto.name}"`,
+        );
       }
     }
 
