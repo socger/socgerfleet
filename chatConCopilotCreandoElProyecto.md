@@ -2784,14 +2784,16 @@ A REALIZAR TODAVIA
 ------------------------------------------------------------------------------------------------------------------------
 
 🎯 PROBADO:
-  Verificar que los datos iniciales se crearon correctamente en la base de datos
-  Probar el sistema de autenticación (login/register)
-  Revisar que los roles y permisos funcionen como esperado
-  La API / endpoints de roles y users
+  - Verificar que los datos iniciales se crearon correctamente en la base de datos
+  - Probar el sistema de autenticación (login/register)
+  - Revisar que los roles y permisos funcionen como esperado
+  - La API / endpoints de roles y users
+  - Comprobar módulo por módulo si hay fallos por el Prettier y corregirlos
+
+
 
 🎯 Próximos pasos recomendados (OPCIONALES):
 0. Sin clasificar:
-  - COMPROBAR MÓDULO POR MÓDULO SI HAY FALLOS POR EL PRETTIER Y CORREGIRLOS
   - Crear middleware global - Para manejo de errores y logging
   - Configurar CORS - Para permitir conexiones desde el frontend
   - Optimizar las consultas - Para mejor rendimiento
