@@ -52,9 +52,9 @@ export class RolesService {
     // Aplicar ordenación - SIMPLIFICAR
     if (filtersDto?.sortBy) {
       if (filtersDto.sortBy === 'userCount') {
-        // Para ordenar por cantidad de usuarios, usar subconsulta
+        // Para ordenar por cantidad de usuarios, usar subconsulta - CORREGIR COLUMNAS
         queryBuilder.addSelect(
-          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id)',
+          '(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = role.id)',
           'userCount',
         );
         queryBuilder.orderBy('userCount', filtersDto.sortOrder || 'ASC');
@@ -123,17 +123,17 @@ export class RolesService {
     // CORREGIR: Filtros por cantidad de usuarios
     // Solo aplicar GROUP BY y HAVING si hay filtros de usuarios
     if (filters.minUsers !== undefined || filters.maxUsers !== undefined) {
-      // Usar subconsulta para contar usuarios
+      // Usar subconsulta para contar usuarios - CORREGIR NOMBRE DE TABLA
       if (filters.minUsers !== undefined) {
         queryBuilder.andWhere(
-          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) >= :minUsers',
+          '(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = role.id) >= :minUsers',
           { minUsers: filters.minUsers },
         );
       }
 
       if (filters.maxUsers !== undefined) {
         queryBuilder.andWhere(
-          '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) <= :maxUsers',
+          '(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = role.id) <= :maxUsers',
           { maxUsers: filters.maxUsers },
         );
       }
@@ -309,17 +309,17 @@ export class RolesService {
       });
     }
 
-    // Filtros por cantidad de usuarios
+    // Filtros por cantidad de usuarios - CORREGIR NOMBRE DE TABLA
     if (filters.minUsers !== undefined) {
       queryBuilder.andWhere(
-        '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) >= :minUsers',
+        '(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = role.id) >= :minUsers',
         { minUsers: filters.minUsers },
       );
     }
 
     if (filters.maxUsers !== undefined) {
       queryBuilder.andWhere(
-        '(SELECT COUNT(*) FROM user_roles_role urr WHERE urr.roleId = role.id) <= :maxUsers',
+        '(SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = role.id) <= :maxUsers',
         { maxUsers: filters.maxUsers },
       );
     }
