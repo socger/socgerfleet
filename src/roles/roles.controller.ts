@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Query,
+  DefaultValuePipe, // Añadir esta importación
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -58,11 +59,14 @@ export class RolesController {
   }
 
   @Get('search')
-  async search(@Query('q') searchTerm: string, @Query('limit') limit?: number) {
-    const results = await this.rolesService.search(
-      searchTerm,
-      limit ? parseInt(limit, 10) : 10,
-    );
+  async search(
+    @Query('q') searchTerm: string,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    // Aplicar límites como en findAll
+    const validLimit = Math.max(1, Math.min(100, limit));
+
+    const results = await this.rolesService.search(searchTerm, validLimit);
     return {
       message: 'Búsqueda completada exitosamente',
       data: results,
