@@ -1,0 +1,54 @@
+###
+# AUTH - REFRESH TOKENS TESTS
+###
+
+# Variables
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+###
+# 1. LOGIN CON REFRESH TOKEN
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@socgerfleet.com",
+  "password": "admin123"
+}
+
+###
+# 2. REFRESCAR TOKEN (usa el refreshToken del login anterior)
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "aqui_va_el_refresh_token_del_login"
+}
+
+###
+# 3. LOGOUT (revocar refresh token específico)
+POST {{baseUrl}}/auth/logout
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "aqui_va_el_refresh_token"
+}
+
+###
+# 4. LOGOUT DE TODOS LOS DISPOSITIVOS
+POST {{baseUrl}}/auth/logout-all
+Authorization: Bearer aqui_va_el_access_token
+Content-Type: {{contentType}}
+
+###
+# 5. REGISTRAR CON REFRESH TOKEN
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "username": "newuser",
+  "email": "newuser@socgerfleet.com",
+  "password": "123456",
+  "firstName": "New",
+  "lastName": "User"
+}
