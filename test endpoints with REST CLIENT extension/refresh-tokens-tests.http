@@ -21,8 +21,12 @@ Content-Type: {{contentType}}
 POST {{baseUrl}}/auth/refresh
 Content-Type: {{contentType}}
 
+
+# {
+#   "refreshToken": "aqui_va_el_refresh_token_del_login"
+# }
 {
-  "refreshToken": "aqui_va_el_refresh_token_del_login"
+  "refreshToken": "141c486a5f66a17f73709a23639be2904659bb39c0b1198abbf396fa4edf860b9e5eaa15ef8673216c9a3ff32db3ec45f83ca2ed3d23b00fc802fc9df67b1647"
 }
 
 ###
@@ -30,25 +34,54 @@ Content-Type: {{contentType}}
 POST {{baseUrl}}/auth/logout
 Content-Type: {{contentType}}
 
+# {
+#   "refreshToken": "aqui_va_el_refresh_token"
+# }
 {
-  "refreshToken": "aqui_va_el_refresh_token"
+  "refreshToken": "b0aa53606991aee62c82ad0ee810e7de9f1849af8e030f9bf03f69ed55291e40ab00a0c24e6df3d2338a55b9ec013776cbda8dd2fb3bf5e6941eb30ec77fdd28"
 }
 
 ###
 # 4. LOGOUT DE TODOS LOS DISPOSITIVOS
 POST {{baseUrl}}/auth/logout-all
-Authorization: Bearer aqui_va_el_access_token
+# Authorization: Bearer aqui_va_el_access_token
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNvY2dlcmZsZWV0LmNvbSIsInN1YiI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibmFtZSI6ImFkbWluIiwiZGVzY3JpcHRpb24iOiJBZG1pbmlzdHJhZG9yIGRlbCBzaXN0ZW1hIGNvbiB0b2RvcyBsb3MgcGVybWlzb3MiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjY0NTU0NSwiZXhwIjoxNzU2NjQ2NDQ1fQ.hIWFRImOXVv-BQ84ZWgVJ2ZzDIdCxfW4Yc1uqQ4L1Mc
 Content-Type: {{contentType}}
 
 ###
-# 5. REGISTRAR CON REFRESH TOKEN
+# 5. OBTENER PERFIL
+POST {{baseUrl}}/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNvY2dlcmZsZWV0LmNvbSIsInN1YiI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGVzIjpbeyJpZCI6MSwibmFtZSI6ImFkbWluIiwiZGVzY3JpcHRpb24iOiJBZG1pbmlzdHJhZG9yIGRlbCBzaXN0ZW1hIGNvbiB0b2RvcyBsb3MgcGVybWlzb3MiLCJjcmVhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjM2NloiLCJ1cGRhdGVkQXQiOiIyMDI1LTA4LTI4VDA1OjEyOjMzLjQwMFoifV0sImlhdCI6MTc1NjY0NTU0NSwiZXhwIjoxNzU2NjQ2NDQ1fQ.hIWFRImOXVv-BQ84ZWgVJ2ZzDIdCxfW4Yc1uqQ4L1Mc
+Content-Type: {{contentType}}
+
+###
+# 5b. REGISTRAR CON REFRESH TOKEN
 POST {{baseUrl}}/auth/register
 Content-Type: {{contentType}}
 
 {
-  "username": "newuser",
-  "email": "newuser@socgerfleet.com",
+  "username": "newuser99",
+  "email": "newuser99@socgerfleet.com",
   "password": "123456",
-  "firstName": "New",
-  "lastName": "User"
+  "firstName": "New99",
+  "lastName": "User99"
 }
+
+###
+# 6. INTENTAR USAR REFRESH TOKEN INVÁLIDO
+POST {{baseUrl}}/auth/refresh
+Content-Type: {{contentType}}
+
+# {
+#   "refreshToken": "token_inexistente_o_revocado"
+# }
+{
+  "refreshToken": "b0aa53606991aee62c82ad0ee810e7de9f1849af8e030f9bf03f69ed55291e40ab00a0c24e6df3d2338a55b9ec013776cbda8dd2fb3bf5e6941eb30ec77fdd28"
+}
+
+###
+# 7. USAR ACCESS TOKEN EXPIRADO (después de 15 minutos)
+POST {{baseUrl}}/auth/profile
+# Authorization: Bearer TOKEN_EXPIRADO
+Authorization: Bearer 141c486a5f66a17f73709a23639be2904659bb39c0b1198abbf396fa4edf860b9e5eaa15ef8673216c9a3ff32db3ec45f83ca2ed3d23b00fc802fc9df67b1647
+Content-Type: {{contentType}}

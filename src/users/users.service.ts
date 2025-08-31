@@ -188,16 +188,16 @@ export class UsersService {
     return user;
   }
 
-  async findByUsername(username: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOne({
-      where: { username },
+      where: { email },
       relations: ['roles'],
     });
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({
-      where: { email },
+      where: { username },
       relations: ['roles'],
     });
   }

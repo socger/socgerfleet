@@ -124,22 +124,25 @@ export class AuthService {
       throw new ConflictException('El nombre de usuario ya está en uso');
     }
 
-    // Crear el usuario
-    const user = await this.usersService.create(registerDto);
-
-    // Asignar rol por defecto (usuario)
+    // Obtener rol por defecto
     let defaultRole = await this.rolesService.findByName('user');
     if (!defaultRole) {
-      // Si no existe el rol 'user', lo creamos
       defaultRole = await this.rolesService.create({
         name: 'user',
         description: 'Usuario básico del sistema',
       });
     }
 
-    await this.usersService.assignRole(user.id, defaultRole.id);
+    // Crear el usuario CON EL ROL incluido en la creación
+    const createUserDto = {
+      ...registerDto,
+      roleIds: [defaultRole.id], // Incluir rol en la creación inicial
+    };
 
-    // Obtener el usuario con roles
+    const user = await this.usersService.create(createUserDto);
+
+    // NO NECESITAMOS assignRole aquí porque ya se asigna en create()
+    // Obtener el usuario con roles para estar seguros
     const userWithRoles = await this.usersService.findOne(user.id);
 
     // Generar tokens

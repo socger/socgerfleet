@@ -217,24 +217,6 @@ export class RolesService {
   async findByName(name: string): Promise<Role | null> {
     return this.roleRepository.findOne({
       where: { name },
-      relations: ['users'],
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        createdAt: true,
-        updatedAt: true,
-        users: {
-          id: true,
-          username: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          isActive: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      },
     });
   }
 
