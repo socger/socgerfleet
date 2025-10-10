@@ -1,99 +1,263 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+<div align="center">
+  <h1>🚀 SocgerFleet API</h1>
+  <p>Sistema avanzado de gestión de usuarios con autenticación JWT y refresh tokens</p>
+  
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+</div>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📋 Descripción
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+**SocgerFleet** es una API REST moderna desarrollada en NestJS que proporciona un sistema completo de gestión de usuarios con autenticación avanzada, control de acceso basado en roles (RBAC) y funcionalidades de búsqueda y filtrado de nivel empresarial.
 
-## Description
+## ✨ Características Principales
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 🔐 **Autenticación y Seguridad**
+- **JWT con Refresh Tokens** - Sistema de doble token con rotación automática
+- **Bcrypt** - Hash seguro de contraseñas
+- **Guards** - Protección de rutas con validación de roles
+- **Gestión de sesiones** - Control granular por dispositivo
 
-## Project setup
+### 👥 **Gestión de Usuarios y Roles**
+- **CRUD completo** - Crear, leer, actualizar, eliminar usuarios y roles
+- **RBAC** - Control de acceso basado en roles
+- **Asignación dinámica** - Asignar/remover roles con validaciones
+- **Validaciones robustas** - Prevención de duplicados y datos inválidos
 
-```bash
-$ npm install
+### 🔍 **Sistema Avanzado de Filtros**
+- **Búsqueda inteligente** - Búsqueda en múltiples campos simultáneamente
+- **Filtros específicos** - Por username, email, roles, fechas, etc.
+- **Paginación optimizada** - Con meta información completa
+- **Ordenación flexible** - Ascendente/descendente por cualquier campo
+- **Combinación de filtros** - Múltiples criterios simultáneos
+
+## 🛠️ Stack Tecnológico
+
+| Tecnología | Versión | Propósito |
+|------------|---------|-----------|
+| **NestJS** | ^10.0.0 | Framework principal |
+| **TypeScript** | ^5.1.3 | Lenguaje de programación |
+| **TypeORM** | ^0.3.17 | ORM para base de datos |
+| **MySQL** | 8.0 | Base de datos |
+| **JWT** | ^10.2.0 | Autenticación |
+| **Bcrypt** | ^5.1.1 | Hash de contraseñas |
+| **Class Validator** | ^0.14.0 | Validación de DTOs |
+| **Docker** | Latest | Containerización |
+
+## 🏗️ Arquitectura
+
+```
+src/
+├── auth/                 # Módulo de autenticación
+│   ├── controllers/      # Controladores (login, register, refresh)
+│   ├── services/         # Lógica de negocio + RefreshTokenService
+│   ├── guards/           # Guards de autenticación y autorización
+│   ├── strategies/       # Estrategias JWT y Local
+│   └── dto/             # DTOs de validación
+├── users/               # Módulo de usuarios
+│   ├── controllers/     # CRUD + filtros avanzados
+│   ├── services/        # Lógica de negocio + búsqueda
+│   └── dto/            # DTOs de validación y filtros
+├── roles/               # Módulo de roles
+├── entities/            # Entidades TypeORM (User, Role, RefreshToken)
+├── common/              # DTOs comunes (paginación, etc.)
+└── database/            # Configuración de base de datos
 ```
 
-## Compile and run the project
+## 🚀 Instalación y Configuración
 
+### **1. Clonar el repositorio**
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <tu-repositorio>
+cd socgerfleet
 ```
 
-## Run tests
-
+### **2. Instalar dependencias**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### **3. Configurar variables de entorno**
 ```bash
-$ npm install -g mau
-$ mau deploy
+cp .env.example .env
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Editar [`.env`](.env ):
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=socger
+DB_PASSWORD=tu_password
+DB_DATABASE=socgerfleet
 
-## Resources
+# JWT
+JWT_SECRET=tu_jwt_secret
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_SECRET=tu_refresh_secret
+JWT_REFRESH_EXPIRES_IN=7d
 
-Check out a few resources that may come in handy when working with NestJS:
+# App
+PORT=3000
+NODE_ENV=development
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### **4. Levantar contenedores Docker**
+```bash
+docker-compose up -d
+```
 
-## Support
+### **5. Ejecutar la aplicación**
+```bash
+# Desarrollo
+npm run start:dev
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Producción
+npm run start:prod
+```
 
-## Stay in touch
+## 📡 API Endpoints
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### **🔐 Autenticación**
+```http
+POST /auth/login          # Login con refresh token
+POST /auth/register       # Registro de usuario
+POST /auth/refresh        # Renovar access token
+POST /auth/logout         # Logout específico
+POST /auth/logout-all     # Logout masivo
+POST /auth/profile        # Obtener perfil
+```
 
-## License
+### **👥 Usuarios**
+```http
+GET    /users             # Listar usuarios (con filtros)
+GET    /users/search      # Búsqueda rápida
+GET    /users/:id         # Obtener usuario
+POST   /users             # Crear usuario
+PUT    /users/:id         # Actualizar usuario
+DELETE /users/:id         # Eliminar usuario
+POST   /users/:id/roles/:roleId    # Asignar rol
+DELETE /users/:id/roles/:roleId    # Remover rol
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### **🛡️ Roles**
+```http
+GET    /roles             # Listar roles (con filtros)
+GET    /roles/:id         # Obtener rol
+POST   /roles             # Crear rol
+PUT    /roles/:id         # Actualizar rol
+DELETE /roles/:id         # Eliminar rol
+```
+
+## 🧪 Testing
+
+### **Probar con REST Client**
+Los archivos de prueba están en [`test endpoints with REST CLIENT extension/`](test endpoints with REST CLIENT extension/):
+
+```bash
+# Pruebas generales CRUD
+test endpoints with REST CLIENT extension/api-tests.http
+
+# Pruebas de refresh tokens
+test endpoints with REST CLIENT extension/refresh-tokens-tests.http
+```
+
+### **Filtros Avanzados**
+```http
+# Buscar usuarios por múltiples criterios
+GET /users?search=admin&role=admin&isActive=true&page=1&limit=10&sortBy=username&sortOrder=ASC
+
+# Filtrar roles con usuarios
+GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
+```
+
+## 🔒 Seguridad
+
+### **Características Implementadas**
+- ✅ **Refresh Token Rotation** - Tokens rotatorios para máxima seguridad
+- ✅ **Validación de duplicados** - Email y username únicos
+- ✅ **Hash de contraseñas** - Bcrypt con salt rounds
+- ✅ **Guards de autorización** - Protección basada en roles
+- ✅ **Limpieza automática** - Tokens expirados eliminados automáticamente
+- ✅ **Trazabilidad** - IP y device info en refresh tokens
+
+### **Flujo de Autenticación**
+1. **Login** → Recibe access token (15 min) + refresh token (7 días)
+2. **Usar API** → Access token en header Authorization
+3. **Token expira** → Usar refresh token para obtener nuevo access token
+4. **Logout** → Revocar refresh tokens específicos o todos
+
+## 🐳 Docker
+
+### **Servicios disponibles**
+- **MySQL** - Base de datos principal (puerto 3306)
+- **phpMyAdmin** - Interfaz web (http://localhost:8080)
+
+### **Comandos útiles**
+```bash
+# Levantar servicios
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Parar servicios
+docker-compose down
+
+# Acceder a MySQL
+docker exec -it socgerfleet_mysql mysql -u socger -p
+```
+
+## 📊 Funcionalidades Destacadas
+
+### **🔍 Sistema de Filtros**
+- **37+ combinaciones** de filtros probadas
+- **Búsqueda inteligente** en múltiples campos
+- **Paginación eficiente** con meta información
+- **Filtros por relaciones** (usuarios por rol, etc.)
+
+### **⚡ Rendimiento**
+- **Consultas optimizadas** con TypeORM
+- **Índices automáticos** en campos clave
+- **Paginación a nivel de BD** para escalabilidad
+
+### **🛡️ Validaciones**
+- **DTOs robustos** con class-validator
+- **Manejo de errores** con códigos HTTP apropiados
+- **Validaciones de negocio** (duplicados, relaciones, etc.)
+
+## 🎯 Casos de Uso
+
+### **Ideal para:**
+- 🌐 **Aplicaciones web modernas** (React, Angular, Vue)
+- 📱 **Apps móviles** (Flutter, React Native)
+- 🏢 **Sistemas empresariales** con gestión de usuarios
+- 🔐 **APIs que requieren seguridad avanzada**
+- 📊 **Dashboards administrativos**
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver [`LICENSE`](LICENSE ) para más detalles.
+
+## 👤 Autor
+
+**Tu Nombre**
+- GitHub: [@tu-usuario](https://github.com/tu-usuario)
+- Email: tu-email@ejemplo.com
+
+---
+
+<div align="center">
+  <p>⭐ ¡Dale una estrella si te gusta el proyecto! ⭐</p>
+</div>
