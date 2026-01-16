@@ -107,7 +107,9 @@ NODE_ENV=development
 
 ### **4. Levantar contenedores Docker**
 ```bash
-docker-compose up -d
+  docker-compose up -d 
+ó el comando más moderno
+  docker compose up -d 
 ```
 
 ### **5. Ejecutar la aplicación**
@@ -199,13 +201,17 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 ### **Comandos útiles**
 ```bash
 # Levantar servicios
-docker-compose up -d
+  docker-compose up -d 
+ó el comando más moderno
+  docker compose up -d 
 
 # Ver logs
 docker-compose logs -f
 
 # Parar servicios
-docker-compose down
+  docker-compose down
+ó el comando más moderno
+  docker compose down
 
 # Acceder a MySQL
 docker exec -it socgerfleet_mysql mysql -u socger -p
@@ -228,6 +234,12 @@ docker exec -it socgerfleet_mysql mysql -u socger -p
 - **DTOs robustos** con class-validator
 - **Manejo de errores** con códigos HTTP apropiados
 - **Validaciones de negocio** (duplicados, relaciones, etc.)
+
+## 📊 Documentación
+Ten, siempre en cuenta, que en este repositorio tenemos la carpeta ""resources/documents/AI conversations" donde se van guardando todas las conversaciones mantenidas con la IA. 
+
+## 📊 Como contestar a los prompt's que se hagan a la IA
+Siempre se debe de contestar en español
 
 ## 🎯 Casos de Uso
 
@@ -253,8 +265,8 @@ Este proyecto está bajo la Licencia MIT. Ver [`LICENSE`](LICENSE ) para más de
 ## 👤 Autor
 
 **Tu Nombre**
-- GitHub: [@tu-usuario](https://github.com/tu-usuario)
-- Email: tu-email@ejemplo.com
+- GitHub: [@socger](https://github.com/socger)
+- Email: socger@gmail.com
 
 ---
 
