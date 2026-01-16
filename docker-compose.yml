@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   mysql:
     image: mysql:8.0.35
     container_name: socgerfleet_mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD_ROOT}
       MYSQL_DATABASE: socgerfleet
-      MYSQL_USER: socger
-      MYSQL_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -27,7 +25,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: root
-      PMA_PASSWORD: dcb4f2e8106a0ef44c3f530d3ae3f9fd
+      PMA_PASSWORD: ${DB_PASSWORD_ROOT}
     ports:
       - "8080:80"
     depends_on:
