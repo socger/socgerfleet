@@ -45,6 +45,7 @@
 | **JWT** | ^10.2.0 | Autenticación |
 | **Bcrypt** | ^5.1.1 | Hash de contraseñas |
 | **Class Validator** | ^0.14.0 | Validación de DTOs |
+| **Swagger/OpenAPI** | ^7.4.2 | Documentación interactiva de API |
 | **Docker** | Latest | Containerización |
 
 ## 🏗️ Arquitectura
@@ -121,9 +122,75 @@ npm run start:dev
 npm run start:prod
 ```
 
+La aplicación estará disponible en:
+- **API**: http://localhost:3000
+- **Swagger UI**: http://localhost:3000/api/docs
+- **phpMyAdmin**: http://localhost:8080
+
 ## 📡 API Endpoints
 
-### **🔐 Autenticación**
+### **� Documentación Interactiva**
+
+La API cuenta con documentación interactiva completa usando **Swagger/OpenAPI**:
+
+```
+http://localhost:3000/api/docs
+```
+
+Así que ten en cuenta swagger/OpenAPI cada vez que crees NUEVOS:
+  - endpoints
+  - DTOs
+  - Controladores
+  - UpdateDto (heredados con PartialType)
+
+Es decir, este sería el Workflow Completo:
+  1. Crear entidad → vehicles.entity.ts
+  2. Crear DTOs con decoradores Swagger
+  3. Crear controlador con decoradores Swagger
+  4. Reiniciar aplicación: npm run start:dev
+  5. ✅ Swagger actualizado automáticamente
+
+Y este sería el Checklist para Nuevas Entidades:
+  ✅ CreateDto con @ApiProperty
+  ✅ UpdateDto con PartialType de @nestjs/swagger
+  ✅ FiltersDto con @ApiPropertyOptional (si aplica)
+  ✅ Controlador con @ApiTags
+  ✅ Cada método con @ApiOperation
+  ✅ Responses con @ApiResponse
+  ✅ @ApiBearerAuth si requiere JWT
+  ✅ @ApiParam para parámetros de ruta
+  ✅ @ApiQuery para query parameters
+
+Ejemplo Completo de Nueva Entidad:
+  Si creas un módulo de Vehicles, solo necesitas:
+    1. create-vehicle.dto.ts (con decoradores)
+    2. update-vehicle.dto.ts (con PartialType)
+    3. vehicles.controller.ts (con todos los decoradores)
+
+  Swagger se actualiza automáticamente al reiniciar la app. No hay pasos adicionales
+
+💡 Tips Importantes
+  - Siempre usa ejemplos realistas en @ApiProperty
+  - Documenta todos los códigos de error con @ApiResponse
+  - Agrupa lógicamente con @ApiTags
+  - Usa PartialType de @nestjs/swagger, no de mapped-types
+  - Reinicia la app para ver cambios (o usa watch mode)
+
+**Características de Swagger:**
+- 🔍 **Exploración interactiva** - Prueba todos los endpoints desde el navegador
+- 📝 **Documentación completa** - Descripciones detalladas de cada endpoint
+- 🔐 **Autenticación integrada** - Prueba endpoints protegidos con JWT
+- 📊 **Schemas detallados** - Visualiza la estructura de requests y responses
+- ✨ **Try it out** - Ejecuta peticiones reales directamente
+
+**Cómo usar Swagger con JWT:**
+1. Primero hacer login en `/auth/login` para obtener el `accessToken`
+2. Clic en el botón **"Authorize" 🔓** en la esquina superior derecha
+3. Ingresar: `Bearer <tu_access_token>` (sin las comillas angulares)
+4. Clic en "Authorize" y luego "Close"
+5. Ahora puedes probar los endpoints protegidos
+
+### **�🔐 Autenticación**
 ```http
 POST /auth/login          # Login con refresh token
 POST /auth/register       # Registro de usuario
