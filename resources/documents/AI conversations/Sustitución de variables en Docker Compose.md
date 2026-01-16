@@ -269,3 +269,34 @@ De esta forma:
 - Para parar: `docker compose down`
 
 Veo que en el README.md ya está documentado con el flag `-d`. ¿Quieres que ejecute ese comando ahora?
+
+User: Estos son los valores que hay ahora mismo en .env para:
+	JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+	JWT_REFRESH_SECRET=your-super-secret-refresh-jwt-key-change-this-in-production
+
+Los valores de estas dos claves, ¿los puedo crear yo?. ¿Hay que notificarlos a algún otro sitio?
+
+GitHub Copilot: Sí, puedes crearlos tú mismo. Son claves secretas que se usan para firmar los JWT tokens. Características importantes:
+
+1. **Puedes crearlos tú**: Strings aleatorios largos (mínimo 32 caracteres)
+2. **NO hay que notificarlos a nadie**: Son secretos privados del servidor
+3. **NUNCA deben exponerse**: No los commits a repositorios públicos
+4. **Son solo para tu servidor**: Para firmar y verificar tokens JWT
+
+¿Quieres que genere dos claves seguras aleatorias para reemplazar los valores actuales? Puedo usar Node.js para crear strings aleatorios de 64 caracteres.
+
+User: si
+
+GitHub Copilot: Ran terminal command:  node -e "console.log('JWT_SECRET=' + require('crypto').randomBytes(32).toString('hex')); console.log('JWT_REFRESH_SECRET=' + require('crypto').randomBytes(32).toString('hex'))"
+
+Using "Replace String in File"
+
+
+```
+
+```
+Listo. He generado y actualizado las claves JWT en .env con valores seguros de 64 caracteres hexadecimales generados aleatoriamente con Node.js crypto.
+
+Recuerda: estas claves son secretas y no deben compartirse ni subirse a repositorios públicos.
+
+Made changes.
