@@ -300,3 +300,309 @@ Listo. He generado y actualizado las claves JWT en .env con valores seguros de 6
 Recuerda: estas claves son secretas y no deben compartirse ni subirse a repositorios públicos.
 
 Made changes.
+
+User: Al poner el comando "npm run start:dev" tengo los siguientes logs de error en la terminal:
+[19:54:08] Starting compilation in watch mode...
+
+[19:54:16] Found 0 errors. Watching for file changes.
+
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [NestFactory] Starting Nest application...
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] TypeOrmModule dependencies initialized +127ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] PassportModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] AppModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:17     LOG [InstanceLoader] JwtModule dependencies initialized +2ms
+query: SELECT version()
+query: START TRANSACTION
+query: SELECT DATABASE() AS `db_name`
+query: SELECT `TABLE_SCHEMA`, `TABLE_NAME`, `TABLE_COMMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'socgerfleet' AND `TABLE_NAME` = 'roles' UNION SELECT `TABLE_SCHEMA`, `TABLE_NAME`, `TABLE_COMMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'socgerfleet' AND `TABLE_NAME` = 'users' UNION SELECT `TABLE_SCHEMA`, `TABLE_NAME`, `TABLE_COMMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'socgerfleet' AND `TABLE_NAME` = 'refresh_tokens' UNION SELECT `TABLE_SCHEMA`, `TABLE_NAME`, `TABLE_COMMENT` FROM `INFORMATION_SCHEMA`.`TABLES` WHERE `TABLE_SCHEMA` = 'socgerfleet' AND `TABLE_NAME` = 'user_roles'
+query: 
+                SELECT
+                    *
+                FROM
+                    `INFORMATION_SCHEMA`.`COLUMNS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'roles'
+                 UNION 
+                SELECT
+                    *
+                FROM
+                    `INFORMATION_SCHEMA`.`COLUMNS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'users'
+                 UNION 
+                SELECT
+                    *
+                FROM
+                    `INFORMATION_SCHEMA`.`COLUMNS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'refresh_tokens'
+                 UNION 
+                SELECT
+                    *
+                FROM
+                    `INFORMATION_SCHEMA`.`COLUMNS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'user_roles'
+                
+query: SELECT * FROM (
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'roles'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'users'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'refresh_tokens'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'user_roles'
+            ) `kcu` WHERE `CONSTRAINT_NAME` = 'PRIMARY'
+query: 
+            SELECT
+                `SCHEMA_NAME`,
+                `DEFAULT_CHARACTER_SET_NAME` as `CHARSET`,
+                `DEFAULT_COLLATION_NAME` AS `COLLATION`
+            FROM `INFORMATION_SCHEMA`.`SCHEMATA`
+            
+query: 
+            SELECT
+                `s`.*
+            FROM (
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`STATISTICS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'roles'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`STATISTICS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'users'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`STATISTICS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'refresh_tokens'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`STATISTICS`
+                WHERE
+                    `TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'user_roles'
+            ) `s`
+            LEFT JOIN (
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'roles'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'users'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'refresh_tokens'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'user_roles'
+            ) `rc`
+                ON
+                    `s`.`INDEX_NAME` = `rc`.`CONSTRAINT_NAME`
+                    AND
+                    `s`.`TABLE_SCHEMA` = `rc`.`CONSTRAINT_SCHEMA`
+            WHERE
+                `s`.`INDEX_NAME` != 'PRIMARY'
+                AND
+                `rc`.`CONSTRAINT_NAME` IS NULL
+            
+query: 
+            SELECT
+                `kcu`.`TABLE_SCHEMA`,
+                `kcu`.`TABLE_NAME`,
+                `kcu`.`CONSTRAINT_NAME`,
+                `kcu`.`COLUMN_NAME`,
+                `kcu`.`REFERENCED_TABLE_SCHEMA`,
+                `kcu`.`REFERENCED_TABLE_NAME`,
+                `kcu`.`REFERENCED_COLUMN_NAME`,
+                `rc`.`DELETE_RULE` `ON_DELETE`,
+                `rc`.`UPDATE_RULE` `ON_UPDATE`
+            FROM (
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'roles'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'users'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'refresh_tokens'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`KEY_COLUMN_USAGE` `kcu`
+                WHERE
+                    `kcu`.`TABLE_SCHEMA` = 'socgerfleet'
+                    AND
+                    `kcu`.`TABLE_NAME` = 'user_roles'
+            ) `kcu`
+            INNER JOIN (
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'roles'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'users'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'refresh_tokens'
+             UNION 
+                SELECT
+                    *
+                FROM `INFORMATION_SCHEMA`.`REFERENTIAL_CONSTRAINTS`
+                WHERE
+                    `CONSTRAINT_SCHEMA` = 'socgerfleet'
+                    AND
+                    `TABLE_NAME` = 'user_roles'
+            ) `rc`
+                ON
+                    `rc`.`CONSTRAINT_SCHEMA` = `kcu`.`CONSTRAINT_SCHEMA`
+                    AND
+                    `rc`.`TABLE_NAME` = `kcu`.`TABLE_NAME`
+                    AND
+                    `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
+            
+query: SELECT * FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = 'socgerfleet' AND `TABLE_NAME` = 'typeorm_metadata'
+query: COMMIT
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] TypeOrmCoreModule dependencies initialized +531ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] TypeOrmModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] RolesModule dependencies initialized +5ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] UsersModule dependencies initialized +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [InstanceLoader] AuthModule dependencies initialized +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RoutesResolver] AppController {/}: +8ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/, GET} route +5ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RoutesResolver] AuthController {/auth}: +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/login, POST} route +2ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/register, POST} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/refresh, POST} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/logout, POST} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/logout-all, POST} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/auth/profile, POST} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RoutesResolver] UsersController {/users}: +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users, GET} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/search, GET} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/:id, GET} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users, POST} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/:id, PATCH} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/:id, DELETE} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/:userId/roles/:roleId, POST} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/users/:userId/roles/:roleId, DELETE} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RoutesResolver] RolesController {/roles}: +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles, GET} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles/search, GET} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles/:id, GET} route +1ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles, POST} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles/:id, PATCH} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [RouterExplorer] Mapped {/roles/:id, DELETE} route +0ms
+[Nest] 15386  - 16/01/2026, 19:54:18     LOG [NestApplication] Nest application successfully started +6ms
+
+GitHub Copilot: No veo ningún error en esos logs. La aplicación está funcionando correctamente:
+
+✅ Compilación exitosa: `Found 0 errors`
+✅ Conexión a MySQL exitosa
+✅ TypeORM sincronizó las tablas correctamente
+✅ Todas las rutas mapeadas correctamente
+✅ **Aplicación iniciada**: `Nest application successfully started`
+
+Los logs de queries SQL son normales - TypeORM está verificando las tablas en la base de datos.
+
+La aplicación está corriendo en **http://localhost:3000**
+
+¿Quieres probar los endpoints? Puedes usar los archivos `.http` en test endpoints with REST CLIENT extension/.
