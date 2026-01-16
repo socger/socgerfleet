@@ -16,18 +16,103 @@ import {
   Query,
   DefaultValuePipe,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { UserFiltersDto } from './dto/user-filters.dto';
 
+@ApiTags('users')
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Listar usuarios con filtros',
+    description:
+      'Obtiene una lista paginada de usuarios con opciones de búsqueda y filtrado avanzadas. ' +
+      'Soporta filtros por múltiples campos, ordenación personalizada y paginación.',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Búsqueda en username, email, firstName y lastName',
+  })
+  @ApiQuery({
+    name: 'username',
+    required: false,
+    type: String,
+    description: 'Filtrar por username',
+  })
+  @ApiQuery({
+    name: 'email',
+    required: false,
+    type: String,
+    description: 'Filtrar por email',
+  })
+  @ApiQuery({
+    name: 'isActive',
+    required: false,
+    type: Boolean,
+    description: 'Filtrar por estado activo',
+  })
+  @ApiQuery({
+    name: 'roleName',
+    required: false,
+    type: String,
+    description: 'Filtrar por nombre de rol',
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['createdAt', 'username', 'email', 'firstName', 'lastName'],
+    description: 'Campo para ordenar',
+  })
+  @ApiQuery({
+    name: 'sortOrder',
+    required: false,
+    enum: ['ASC', 'DESC'],
+    description: 'Orden de los resultados',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de usuarios obtenida exitosamente',
+    schema: {
+      example: {
+        message: 'Lista de usuarios obtenida exitosamente',
+        data: [
+          {
+            id: 1,
+            username: 'admin',
+            email: 'admin@socgerfleet.com',
+            firstName: 'Admin',
+            lastName: 'User',
+            isActive: true,
+            roles: ['admin'],
+          },
+        ],
+        meta: {
+          page: 1,
+          limit: 10,
+          totalItems: 1,
+          totalPages: 1,
+        },
+      },
+    },
+  })
   async findAll(@Query() query: any) {
     // Manejar paginación
     const paginationDto = new PaginationDto();
@@ -65,6 +150,27 @@ export class UsersController {
   }
 
   @Get('search')
+  @ApiOperation({
+    summary: 'Búsqueda rápida de usuarios',
+    description:
+      'Búsqueda simplificada en username, email, firstName y lastName.',
+  })
+  @ApiQuery({
+    name: 'q',
+    required: true,
+    type: String,
+    description: 'Término de búsqueda',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Límite de resultados (default: 10)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Búsqueda completada',
+  })
   async search(
     @Query('q') searchTerm: string,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
@@ -78,6 +184,16 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Obtener usuario por ID',
+    description: 'Obtiene la información detallada de un usuario específico.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del usuario' })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario obtenido exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return {
       message: 'Usuario obtenido exitosamente',
@@ -87,6 +203,19 @@ export class UsersController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Crear nuevo usuario',
+    description:
+      'Crea un nuevo usuario en el sistema. El email y username deben ser únicos.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Usuario creado exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Email o username ya registrado',
+  })
   async create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
     return {
       message: 'Usuario creado exitosamente',
@@ -95,6 +224,16 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Actualizar usuario',
+    description: 'Actualiza la información de un usuario existente.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del usuario' })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario actualizado exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
@@ -107,6 +246,16 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Eliminar usuario',
+    description: 'Elimina un usuario del sistema de forma permanente.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del usuario' })
+  @ApiResponse({
+    status: 204,
+    description: 'Usuario eliminado exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.usersService.remove(id);
     return {
@@ -115,6 +264,24 @@ export class UsersController {
   }
 
   @Post(':userId/roles/:roleId')
+  @ApiOperation({
+    summary: 'Asignar rol a usuario',
+    description: 'Asigna un rol específico a un usuario.',
+  })
+  @ApiParam({ name: 'userId', type: Number, description: 'ID del usuario' })
+  @ApiParam({ name: 'roleId', type: Number, description: 'ID del rol' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol asignado exitosamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario o rol no encontrado',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'El usuario ya tiene este rol',
+  })
   async assignRole(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('roleId', ParseIntPipe) roleId: number,
@@ -126,6 +293,20 @@ export class UsersController {
   }
 
   @Delete(':userId/roles/:roleId')
+  @ApiOperation({
+    summary: 'Remover rol de usuario',
+    description: 'Remueve un rol específico de un usuario.',
+  })
+  @ApiParam({ name: 'userId', type: Number, description: 'ID del usuario' })
+  @ApiParam({ name: 'roleId', type: Number, description: 'ID del rol' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol removido exitosamente',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario o rol no encontrado',
+  })
   async removeRole(
     @Param('userId', ParseIntPipe) userId: number,
     @Param('roleId', ParseIntPipe) roleId: number,

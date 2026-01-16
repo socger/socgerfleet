@@ -11,19 +11,89 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Query,
-  DefaultValuePipe, // Añadir esta importación
+  DefaultValuePipe,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { RoleFiltersDto } from './dto/role-filters.dto';
 
+@ApiTags('roles')
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Get()
+  @ApiOperation({
+    summary: 'Listar roles con filtros',
+    description:
+      'Obtiene una lista paginada de roles con opciones de búsqueda y filtrado. ' +
+      'Incluye información del conteo de usuarios por rol.',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Búsqueda en nombre y descripción',
+  })
+  @ApiQuery({
+    name: 'minUsers',
+    required: false,
+    type: Number,
+    description: 'Filtrar roles con mínimo número de usuarios',
+  })
+  @ApiQuery({
+    name: 'maxUsers',
+    required: false,
+    type: Number,
+    description: 'Filtrar roles con máximo número de usuarios',
+  })
+  @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    enum: ['name', 'createdAt', 'userCount'],
+    description: 'Campo para ordenar',
+  })
+  @ApiQuery({
+    name: 'sortOrder',
+    required: false,
+    enum: ['ASC', 'DESC'],
+    description: 'Orden de los resultados',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de roles obtenida exitosamente',
+    schema: {
+      example: {
+        message: 'Lista de roles obtenida exitosamente',
+        data: [
+          {
+            id: 1,
+            name: 'admin',
+            description: 'Administrator role',
+            userCount: 5,
+            createdAt: '2024-01-01T00:00:00.000Z',
+          },
+        ],
+        meta: {
+          page: 1,
+          limit: 10,
+          totalItems: 1,
+          totalPages: 1,
+        },
+      },
+    },
+  })
   async findAll(@Query() query: any) {
     // Manejar paginación
     const paginationDto = new PaginationDto();
@@ -59,6 +129,26 @@ export class RolesController {
   }
 
   @Get('search')
+  @ApiOperation({
+    summary: 'Búsqueda rápida de roles',
+    description: 'Búsqueda simplificada en nombre y descripción de roles.',
+  })
+  @ApiQuery({
+    name: 'q',
+    required: true,
+    type: String,
+    description: 'Término de búsqueda',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Límite de resultados (default: 10)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Búsqueda completada',
+  })
   async search(
     @Query('q') searchTerm: string,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
@@ -74,6 +164,17 @@ export class RolesController {
   }
 
   @Get(':id')
+  @ApiOperation({
+    summary: 'Obtener rol por ID',
+    description:
+      'Obtiene la información detallada de un rol específico, incluyendo usuarios asociados.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del rol' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol obtenido exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return {
       message: 'Rol obtenido exitosamente',
@@ -83,6 +184,19 @@ export class RolesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Crear nuevo rol',
+    description:
+      'Crea un nuevo rol en el sistema. El nombre del rol debe ser único.',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Rol creado exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Nombre de rol ya existe',
+  })
   async create(@Body(ValidationPipe) createRoleDto: CreateRoleDto) {
     return {
       message: 'Rol creado exitosamente',
@@ -91,6 +205,16 @@ export class RolesController {
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Actualizar rol',
+    description: 'Actualiza la información de un rol existente.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del rol' })
+  @ApiResponse({
+    status: 200,
+    description: 'Rol actualizado exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateRoleDto: UpdateRoleDto,
@@ -103,6 +227,20 @@ export class RolesController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Eliminar rol',
+    description: 'Elimina un rol del sistema de forma permanente.',
+  })
+  @ApiParam({ name: 'id', type: Number, description: 'ID del rol' })
+  @ApiResponse({
+    status: 204,
+    description: 'Rol eliminado exitosamente',
+  })
+  @ApiResponse({ status: 404, description: 'Rol no encontrado' })
+  @ApiResponse({
+    status: 400,
+    description: 'No se puede eliminar un rol con usuarios asignados',
+  })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.rolesService.remove(id);
     return {
