@@ -192,12 +192,20 @@ Ejemplo Completo de Nueva Entidad:
 
 ### **�🔐 Autenticación**
 ```http
-POST /auth/login          # Login con refresh token
-POST /auth/register       # Registro de usuario
-POST /auth/refresh        # Renovar access token
-POST /auth/logout         # Logout específico
-POST /auth/logout-all     # Logout masivo
-POST /auth/profile        # Obtener perfil
+POST /auth/login                      # Login con refresh token
+POST /auth/register                   # Registro de usuario
+POST /auth/refresh                    # Renovar access token
+POST /auth/logout                     # Logout específico
+POST /auth/logout-all                 # Logout masivo
+POST /auth/profile                    # Obtener perfil
+```
+
+### **🔑 Gestión de Contraseñas**
+```http
+POST /auth/request-password-reset     # Solicitar reset de contraseña (envía email)
+POST /auth/reset-password             # Resetear contraseña con token
+POST /auth/change-password            # Cambiar contraseña (autenticado)
+GET  /auth/verify-email?token=xxx     # Verificar email de usuario
 ```
 
 ### **👥 Usuarios**
@@ -252,6 +260,11 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 - ✅ **Guards de autorización** - Protección basada en roles
 - ✅ **Limpieza automática** - Tokens expirados eliminados automáticamente
 - ✅ **Trazabilidad** - IP y device info en refresh tokens
+- ✅ **Verificación de email** - Email de confirmación al registrarse
+- ✅ **Recuperación de contraseña** - Reset seguro vía email
+- ✅ **Historial de contraseñas** - Validación contra últimas 5 contraseñas
+- ✅ **Validación de contraseña fuerte** - Requisitos de complejidad
+- ✅ **Notificaciones por email** - Confirmación de cambios de seguridad
 
 ### **Flujo de Autenticación**
 1. **Login** → Recibe access token (15 min) + refresh token (7 días)

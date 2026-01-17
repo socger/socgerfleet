@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
 import { RefreshTokenService } from './services/refresh-token.service';
+import { PasswordManagementService } from './services/password-management.service';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -40,6 +41,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private refreshTokenService: RefreshTokenService,
+    private passwordManagementService: PasswordManagementService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -145,6 +147,9 @@ export class AuthService {
     // Obtener el usuario con roles para estar seguros
     const userWithRoles = await this.usersService.findOne(user.id);
 
+    // Enviar email de verificación
+    await this.passwordManagementService.sendVerificationEmail(userWithRoles);
+
     // Generar tokens
     const accessToken = this.generateAccessToken(userWithRoles);
     const refreshToken = await this.refreshTokenService.createRefreshToken(
@@ -205,5 +210,29 @@ export class AuthService {
 
   async logoutAll(userId: number): Promise<void> {
     await this.refreshTokenService.revokeAllUserTokens(userId);
+  }
+
+  async requestPasswordReset(email: string): Promise<void> {
+    await this.passwordManagementService.requestPasswordReset(email);
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<void> {
+    await this.passwordManagementService.resetPassword(token, newPassword);
+  }
+
+  async changePassword(
+    userId: number,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    await this.passwordManagementService.changePassword(
+      userId,
+      currentPassword,
+      newPassword,
+    );
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    await this.passwordManagementService.verifyEmail(token);
   }
 }

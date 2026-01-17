@@ -9,6 +9,8 @@ import {
   Ip,
   Headers,
   Req,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { Request } from 'express';
 import {
@@ -23,6 +25,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
 
 // Interfaz para el request con usuario autenticado
 interface AuthenticatedRequest extends Request {
@@ -219,6 +225,131 @@ export class AuthController {
     return {
       message: 'Perfil obtenido exitosamente',
       user: req.user,
+    };
+  }
+
+  @Post('request-password-reset')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Solicitar recuperación de contraseña',
+    description:
+      'Envía un email con un token para resetear la contraseña. Por seguridad, siempre retorna éxito aunque el email no exista.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Email de recuperación enviado (si el usuario existe)',
+    schema: {
+      example: {
+        message:
+          'Si el email existe, recibirás un enlace de recuperación en breve',
+      },
+    },
+  })
+  @ApiResponse({ status: 400, description: 'Email inválido' })
+  async requestPasswordReset(
+    @Body(ValidationPipe) dto: RequestPasswordResetDto,
+  ) {
+    await this.authService.requestPasswordReset(dto.email);
+    return {
+      message:
+        'Si el email existe, recibirás un enlace de recuperación en breve',
+    };
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Resetear contraseña con token',
+    description:
+      'Establece una nueva contraseña usando el token recibido por email. La contraseña no puede ser una de las últimas 5 utilizadas.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Contraseña reseteada exitosamente',
+    schema: {
+      example: {
+        message: 'Contraseña reseteada exitosamente',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Token inválido, expirado o contraseña en el historial',
+  })
+  async resetPassword(@Body(ValidationPipe) dto: ResetPasswordDto) {
+    await this.authService.resetPassword(dto.token, dto.newPassword);
+    return {
+      message: 'Contraseña reseteada exitosamente',
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Cambiar contraseña (usuario autenticado)',
+    description:
+      'Permite al usuario cambiar su contraseña proporcionando la actual. La nueva contraseña no puede ser igual a la actual ni estar en el historial de las últimas 5.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Contraseña cambiada exitosamente',
+    schema: {
+      example: {
+        message: 'Contraseña cambiada exitosamente',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Contraseña actual incorrecta o nueva contraseña inválida',
+  })
+  @ApiResponse({ status: 401, description: 'No autorizado' })
+  async changePassword(
+    @Req() req: AuthenticatedRequest,
+    @Body(ValidationPipe) dto: ChangePasswordDto,
+  ) {
+    await this.authService.changePassword(
+      req.user.id,
+      dto.currentPassword,
+      dto.newPassword,
+    );
+    return {
+      message: 'Contraseña cambiada exitosamente',
+    };
+  }
+
+  @Get('verify-email')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Verificar email del usuario',
+    description:
+      'Verifica la dirección de email del usuario usando el token recibido por email tras el registro.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Email verificado exitosamente',
+    schema: {
+      example: {
+        message: 'Email verificado exitosamente',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Token inválido, expirado o ya utilizado',
+  })
+  async verifyEmail(@Query('token') token: string) {
+    if (!token) {
+      return {
+        message: 'Token es requerido',
+        status: 400,
+      };
+    }
+    await this.authService.verifyEmail(token);
+    return {
+      message: 'Email verificado exitosamente',
     };
   }
 }
