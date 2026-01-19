@@ -76,10 +76,10 @@ GitHub Copilot: Analizando el proyecto **SocgerFleet**, aquí están las funcion
 - Variables de entorno validadas con `@nestjs/config`
 
 ### **📈 12. Mejoras de API**
-- Versionado de API (`/v1/`, `/v2/`)
+- Versionado de API (`/v1/`, `/v2/`) ... YA ESTA IMPLEMENTADO
 - GraphQL endpoint (alternativo a REST)
 - Webhooks para integraciones
-- Documentación de cambios (CHANGELOG)
+- Documentación de cambios (CHANGELOG) ... YA ESTA IMPLEMENTADO
 
 ## 🎯 **Prioridades Recomendadas**
 
