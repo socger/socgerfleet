@@ -1,10 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Habilitar versionado de API (URI Versioning)
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+  });
 
   // Habilitar validación global
   app.useGlobalPipes(
@@ -20,9 +26,10 @@ async function bootstrap() {
     .setTitle('SocgerFleet API')
     .setDescription(
       'Sistema avanzado de gestión de usuarios con autenticación JWT y refresh tokens. ' +
-      'API REST moderna con control de acceso basado en roles (RBAC) y funcionalidades de búsqueda y filtrado.',
+      'API REST moderna con control de acceso basado en roles (RBAC) y funcionalidades de búsqueda y filtrado. ' +
+      '\n\n**Versionado:** Esta API utiliza versionado URI. Todas las rutas están prefijadas con /v1/ (ejemplo: /v1/users, /v1/auth/login).',
     )
-    .setVersion('1.0')
+    .setVersion('1.0.0')
     .addTag('auth', 'Endpoints de autenticación y gestión de sesiones')
     .addTag('users', 'Gestión de usuarios con filtros avanzados')
     .addTag('roles', 'Gestión de roles y permisos')

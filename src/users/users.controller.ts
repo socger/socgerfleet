@@ -33,7 +33,7 @@ import { UserFiltersDto } from './dto/user-filters.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
-@Controller('users')
+@Controller({ path: 'users', version: '1' })
 @UseInterceptors(ClassSerializerInterceptor)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

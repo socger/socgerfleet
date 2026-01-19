@@ -1,8 +1,8 @@
 {
   "name": "socgerfleet",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "1.1.0",
+  "description": "Sistema avanzado de gestión de usuarios con autenticación JWT y API versionada",
+  "author": "Socger",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

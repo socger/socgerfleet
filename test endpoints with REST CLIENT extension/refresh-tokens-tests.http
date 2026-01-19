@@ -1,9 +1,10 @@
 ###
 # AUTH - REFRESH TOKENS TESTS
+# Versión de API: v1 (URI Versioning)
 ###
 
 # Variables
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3000/v1
 @contentType = application/json
 
 ###

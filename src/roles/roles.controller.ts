@@ -31,7 +31,7 @@ import { RoleFiltersDto } from './dto/role-filters.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('roles')
-@Controller('roles')
+@Controller({ path: 'roles', version: '1' })
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
