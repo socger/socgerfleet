@@ -1,0 +1,212 @@
+###
+# Pruebas de Throttling Avanzado en Login
+# ========================================
+# 
+# Estas pruebas demuestran el sistema de throttling implementado
+# para prevenir ataques de fuerza bruta.
+#
+# IMPORTANTE: Ejecutar estas pruebas EN ORDEN para ver el throttling en acción
+###
+
+### 1. Login exitoso (para establecer línea base)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@socgerfleet.com",
+  "password": "Admin123!"
+}
+
+### 2. Primer intento fallido (credenciales incorrectas)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### 3. Segundo intento fallido
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### 4. Tercer intento fallido
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### 5. Cuarto intento fallido (último antes de bloqueo)
+# NOTA: A partir del 4to intento con el MISMO email, se debe bloquear (límite: 3)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+### 6. Este intento DEBE ser bloqueado (HTTP 429)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "wrongpassword"
+}
+
+###
+# === PRUEBA DE THROTTLING POR IP ===
+# Hacer múltiples intentos con diferentes emails (misma IP)
+###
+
+### 7. Intento 1 por IP (email diferente)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user1@test.com",
+  "password": "wrong1"
+}
+
+### 8. Intento 2 por IP (email diferente)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user2@test.com",
+  "password": "wrong2"
+}
+
+### 9. Intento 3 por IP (email diferente)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user3@test.com",
+  "password": "wrong3"
+}
+
+### 10. Intento 4 por IP (email diferente)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user4@test.com",
+  "password": "wrong4"
+}
+
+### 11. Intento 5 por IP (email diferente)
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user5@test.com",
+  "password": "wrong5"
+}
+
+### 12. Intento 6 por IP - DEBE ser bloqueado (HTTP 429)
+# Límite por IP: 5 intentos en 15 minutos
+# Este es el 6to intento desde la misma IP, debe bloquearse
+POST http://localhost:3000/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "user6@test.com",
+  "password": "wrong6"
+}
+
+###
+# === LIMPIAR DATOS DE PRUEBA ===
+# Si quieres empezar de nuevo desde cero
+###
+
+# Ejecutar en terminal:
+# docker exec socgerfleet_mysql mysql -uroot -pdcb4f2e8106a0ef44c3f530d3ae3f9fd socgerfleet -e "DELETE FROM login_attempts;"
+
+###
+# === CONSULTAS A BASE DE DATOS PARA VERIFICAR ===
+# Ejecutar estas queries en tu cliente MySQL
+###
+
+# Consulta 1: Ver todos los intentos recientes
+# SELECT * FROM login_attempts ORDER BY created_at DESC LIMIT 20;
+
+# Consulta 2: Ver intentos por IP
+# SELECT ip_address, COUNT(*) as attempts, 
+#        SUM(is_successful) as successful,
+#        SUM(!is_successful) as failed
+# FROM login_attempts
+# WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+# GROUP BY ip_address;
+
+# Consulta 3: Ver bloqueos activos
+# SELECT * FROM login_attempts
+# WHERE blocked_until > NOW()
+# ORDER BY blocked_until DESC;
+
+# Consulta 4: Ver intentos por email/identifier
+# SELECT identifier, COUNT(*) as attempts,
+#        SUM(is_successful) as successful,
+#        SUM(!is_successful) as failed
+# FROM login_attempts
+# WHERE created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)
+# GROUP BY identifier
+# ORDER BY failed DESC;
+
+###
+# === RESPUESTAS ESPERADAS ===
+###
+
+# Login exitoso (HTTP 200):
+# {
+#   "message": "Login exitoso",
+#   "accessToken": "eyJhbGc...",
+#   "refreshToken": "eyJhbGc...",
+#   "user": { ... }
+# }
+
+# Credenciales inválidas (HTTP 401):
+# {
+#   "statusCode": 401,
+#   "message": "Credenciales inválidas"
+# }
+
+# Bloqueado por throttling (HTTP 429):
+# {
+#   "statusCode": 429,
+#   "message": "Demasiados intentos de login desde esta IP. Bloqueado por 5 minutos.",
+#   "blockedUntil": "2026-01-19T10:35:00.000Z",
+#   "remainingTime": "5 minutos"
+# }
+
+###
+# === NOTAS IMPORTANTES ===
+###
+
+# 1. Los límites son:
+#    - Por IP: 5 intentos fallidos en 15 minutos
+#    - Por usuario (email): 3 intentos fallidos en 15 minutos
+#
+# 2. Bloqueos progresivos:
+#    - 1ª violación: 5 minutos
+#    - 2ª violación: 15 minutos
+#    - 3ª violación: 30 minutos
+#    - 4ª violación: 1 hora
+#    - 5ª+ violación: 24 horas
+#
+# 3. Para resetear las pruebas, puedes:
+#    - Esperar 15 minutos
+#    - O ejecutar: DELETE FROM login_attempts WHERE created_at > DATE_SUB(NOW(), INTERVAL 1 HOUR);
+#
+# 4. Para cambiar tu IP aparente (si estás probando):
+#    - Usa un proxy o VPN
+#    - O modifica la configuración del guard para usar un header personalizado

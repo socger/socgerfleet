@@ -14,4 +14,5 @@ export const AppDataSource = new DataSource({
   migrations: ['src/database/migrations/**/*.ts'],
   synchronize: false, // IMPORTANTE: Debe estar en false al usar migraciones
   logging: process.env.NODE_ENV === 'development',
+  timezone: 'Z', // Forzar UTC para todas las operaciones de fecha
 });

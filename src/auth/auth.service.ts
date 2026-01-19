@@ -5,10 +5,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { RolesService } from '../roles/roles.service';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { PasswordManagementService } from './services/password-management.service';
+import { LoginAttempt } from '../entities/login-attempt.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -42,6 +45,8 @@ export class AuthService {
     private configService: ConfigService,
     private refreshTokenService: RefreshTokenService,
     private passwordManagementService: PasswordManagementService,
+    @InjectRepository(LoginAttempt)
+    private loginAttemptRepository: Repository<LoginAttempt>,
   ) {}
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -73,37 +78,80 @@ export class AuthService {
     deviceInfo?: string,
     ipAddress?: string,
   ): Promise<AuthResponse> {
-    const user = await this.validateUser(loginDto.email, loginDto.password);
+    const identifier = loginDto.email;
+    
+    try {
+      const user = await this.validateUser(loginDto.email, loginDto.password);
 
-    if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      if (!user) {
+        // Registrar intento fallido
+        await this.recordLoginAttempt(
+          identifier,
+          ipAddress,
+          deviceInfo,
+          false,
+          'Credenciales inválidas',
+        );
+        throw new UnauthorizedException('Credenciales inválidas');
+      }
+
+      if (!user.isActive) {
+        // Registrar intento fallido
+        await this.recordLoginAttempt(
+          identifier,
+          ipAddress,
+          deviceInfo,
+          false,
+          'Cuenta desactivada',
+        );
+        throw new UnauthorizedException('Cuenta desactivada');
+      }
+
+      // Generar tokens
+      const accessToken = this.generateAccessToken(user);
+      const refreshToken = await this.refreshTokenService.createRefreshToken(
+        user.id,
+        deviceInfo,
+        ipAddress,
+      );
+
+      // Registrar intento exitoso
+      await this.recordLoginAttempt(
+        identifier,
+        ipAddress,
+        deviceInfo,
+        true,
+        null,
+      );
+
+      return {
+        message: 'Login exitoso',
+        accessToken,
+        refreshToken,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          roles: user.roles,
+        },
+      };
+    } catch (error) {
+      // Si no se ha registrado el intento, registrarlo como fallido
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      
+      await this.recordLoginAttempt(
+        identifier,
+        ipAddress,
+        deviceInfo,
+        false,
+        'Error interno',
+      );
+      throw error;
     }
-
-    if (!user.isActive) {
-      throw new UnauthorizedException('Cuenta desactivada');
-    }
-
-    // Generar tokens
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = await this.refreshTokenService.createRefreshToken(
-      user.id,
-      deviceInfo,
-      ipAddress,
-    );
-
-    return {
-      message: 'Login exitoso',
-      accessToken,
-      refreshToken,
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        roles: user.roles,
-      },
-    };
   }
 
   async register(
@@ -234,5 +282,47 @@ export class AuthService {
 
   async verifyEmail(token: string): Promise<void> {
     await this.passwordManagementService.verifyEmail(token);
+  }
+
+  /**
+   * Registra un intento de login (exitoso o fallido)
+   * para el sistema de throttling
+   */
+  private async recordLoginAttempt(
+    identifier: string,
+    ipAddress: string,
+    userAgent: string,
+    isSuccessful: boolean,
+    failureReason: string | null,
+  ): Promise<void> {
+    try {
+      await this.loginAttemptRepository.save({
+        identifier: identifier || 'unknown',
+        ipAddress: ipAddress || 'unknown',
+        userAgent: userAgent || null,
+        isSuccessful,
+        failureReason,
+      });
+    } catch (error) {
+      // Log error pero no fallar el login si hay problema guardando el intento
+      console.error('Error registrando intento de login:', error);
+    }
+  }
+
+  /**
+   * Limpia intentos de login antiguos (útil para mantenimiento)
+   * Elimina registros más antiguos de 30 días
+   */
+  async cleanOldLoginAttempts(): Promise<number> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const result = await this.loginAttemptRepository
+      .createQueryBuilder()
+      .delete()
+      .where('created_at < :date', { date: thirtyDaysAgo })
+      .execute();
+
+    return result.affected || 0;
   }
 }

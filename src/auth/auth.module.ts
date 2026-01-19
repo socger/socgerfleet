@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { RefreshTokenService } from './services/refresh-token.service';
 import { EmailService } from './services/email.service';
 import { PasswordManagementService } from './services/password-management.service';
+import { LoginThrottlerGuard } from './guards/login-throttler.guard';
 import { UsersModule } from '../users/users.module';
 import { RolesModule } from '../roles/roles.module';
 import { PassportModule } from '@nestjs/passport';
@@ -15,6 +16,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { RefreshToken } from '../entities/refresh-token.entity';
 import { PasswordHistory } from '../entities/password-history.entity';
 import { VerificationToken } from '../entities/verification-token.entity';
+import { LoginAttempt } from '../entities/login-attempt.entity';
 import { User } from '../entities/user.entity';
 
 @Module({
@@ -23,6 +25,7 @@ import { User } from '../entities/user.entity';
       RefreshToken,
       PasswordHistory,
       VerificationToken,
+      LoginAttempt,
       User,
     ]),
     UsersModule,
@@ -44,6 +47,7 @@ import { User } from '../entities/user.entity';
     RefreshTokenService,
     EmailService,
     PasswordManagementService,
+    LoginThrottlerGuard,
     LocalStrategy,
     JwtStrategy,
   ],

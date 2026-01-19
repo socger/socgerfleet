@@ -23,6 +23,7 @@ import {
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LoginThrottlerGuard } from './guards/login-throttler.guard';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
@@ -48,12 +49,16 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  // Rate limiting estricto para login: 5 intentos por minuto
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  // Throttling avanzado con guard personalizado
+  @UseGuards(LoginThrottlerGuard)
+  // Rate limiting básico de respaldo: 10 intentos por minuto
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Iniciar sesión',
     description:
-      'Autenticar usuario con email y contraseña. Retorna access token (15 min) y refresh token (7 días).',
+      'Autenticar usuario con email y contraseña. Retorna access token (15 min) y refresh token (7 días). ' +
+      'Sistema de throttling avanzado: máximo 5 intentos por IP y 3 por usuario en 15 minutos. ' +
+      'Bloqueos progresivos: 5min, 15min, 30min, 1h, 24h.',
   })
   @ApiResponse({
     status: 200,
@@ -73,6 +78,18 @@ export class AuthController {
     },
   })
   @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
+  @ApiResponse({
+    status: 429,
+    description: 'Demasiados intentos - IP o usuario bloqueado temporalmente',
+    schema: {
+      example: {
+        statusCode: 429,
+        message: 'Demasiados intentos de login desde esta IP. Bloqueado por 5 minutos.',
+        blockedUntil: '2026-01-19T10:35:00.000Z',
+        remainingTime: '5 minutos',
+      },
+    },
+  })
   async login(
     @Body(ValidationPipe) loginDto: LoginDto,
     @Headers('user-agent') userAgent: string,
