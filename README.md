@@ -40,6 +40,13 @@
 - **Auditoría completa** - Trazabilidad de quién creó, modificó y eliminó registros
 - **Seeders** - Datos iniciales automatizados para desarrollo y pruebas
 
+### 🔄 **Versionado de API (URI Versioning)**
+- **Múltiples versiones simultáneas** - v1 y v2+ pueden coexistir
+- **URLs explícitas** - `/v1/users`, `/v2/users`
+- **Backward compatibility** - Clientes no se rompen con nuevas versiones
+- **Deprecación controlada** - Período de transición definido
+- **Documentación por versión** - Swagger documenta cada versión separadamente
+
 ## 🛠️ Stack Tecnológico
 
 | Tecnología | Versión | Propósito |
@@ -153,9 +160,11 @@ npm run start:prod
 ```
 
 La aplicación estará disponible en:
-- **API**: http://localhost:3000
+- **API v1**: http://localhost:3000/v1
 - **Swagger UI**: http://localhost:3000/api/docs
 - **phpMyAdmin**: http://localhost:8080
+
+**Nota:** La API utiliza versionado URI. Todos los endpoints están prefijados con `/v1/` (ejemplo: `/v1/users`, `/v1/auth/login`)
 
 ## 🗄️ Gestión de Base de Datos
 
@@ -673,8 +682,329 @@ El proyecto incluye documentación detallada para diferentes aspectos:
 **Desarrollo:**
 - [Guía: Crear Nuevas Entidades](resources/documents/AI%20conversations/GUIA-Crear-Nuevas-Entidades.md) - Workflow completo con ejemplos
 
+**Control de Versiones:**
+- [CHANGELOG.md](CHANGELOG.md) - Historial de cambios del proyecto versionado con Semantic Versioning
+
 **Conversaciones con IA:**
 - Todas las conversaciones y decisiones de diseño se documentan en `resources/documents/AI conversations/`
+
+### **📝 Mantenimiento del Proyecto**
+
+**Registro de Cambios (CHANGELOG):**
+
+Este proyecto mantiene un registro detallado de todos los cambios en [CHANGELOG.md](CHANGELOG.md) siguiendo el estándar [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/).
+
+**Workflow al implementar cambios:**
+
+1. **Durante el desarrollo**: Añade tus cambios en la sección `[Unreleased]` del CHANGELOG
+2. **Categoriza correctamente**:
+   - `Added` - Nueva funcionalidad
+   - `Changed` - Cambios en funcionalidad existente
+   - `Deprecated` - Funcionalidad que se eliminará próximamente
+   - `Removed` - Funcionalidad eliminada
+   - `Fixed` - Corrección de bugs
+   - `Security` - Parches de seguridad
+   - `Technical` - Cambios técnicos, dependencias, refactoring
+
+3. **Antes de un release**:
+   ```bash
+   # Actualiza version en package.json
+   npm version minor  # o major, patch según corresponda
+   
+   # Mueve cambios de [Unreleased] a nueva versión en CHANGELOG.md
+   # con fecha en formato YYYY-MM-DD
+   
+   # Commit y tag
+   git add .
+   git commit -m "chore: release v1.1.0"
+   git tag v1.1.0
+   git push && git push --tags
+   ```
+
+**Versionado Semántico (SemVer):**
+
+El proyecto sigue [Semantic Versioning](https://semver.org/lang/es/) - `MAJOR.MINOR.PATCH`:
+- **MAJOR** (1.0.0 → 2.0.0): Cambios incompatibles en la API (breaking changes)
+- **MINOR** (1.0.0 → 1.1.0): Nueva funcionalidad compatible con versiones anteriores
+- **PATCH** (1.0.0 → 1.0.1): Correcciones de bugs compatibles
+
+**Ejemplos de cambios y su versionado:**
+
+```
+MAJOR (Breaking Changes):
+- Cambiar estructura de respuesta de endpoints existentes
+- Eliminar campos o endpoints
+- Cambiar comportamiento fundamental de la API
+- Actualizar a versión major de dependencias con breaking changes
+
+MINOR (New Features):
+- Añadir nuevos endpoints
+- Agregar campos opcionales a entidades
+- Implementar nueva funcionalidad sin afectar existente
+- Agregar versionado de API (/v1/, /v2/)
+
+PATCH (Bug Fixes):
+- Corregir errores de validación
+- Arreglar bugs de lógica
+- Actualizar documentación
+- Parches de seguridad sin breaking changes
+```
+
+**⚠️ Documentación de Breaking Changes:**
+
+Cuando implementes cambios incompatibles, márcalos claramente:
+
+```markdown
+### Changed
+- **BREAKING**: Cambio en estructura de respuesta de `/users`. 
+  Ahora retorna `{ data: [], meta: {} }` en lugar de array directo
+- **BREAKING**: Campo `username` ahora es requerido en registro
+---
+
+## 🤖 Guía para IA: Crear/Modificar Endpoints y Entidades
+
+### ⚠️ **IMPORTANTE: Esta sección es una guía para asistentes de IA**
+
+Al trabajar con este proyecto, sigue estas convenciones estrictamente:
+
+### 📝 **1. Idioma de Comunicación**
+- ✅ **SIEMPRE contestar en español** a los prompts del usuario
+- ✅ Código y comentarios técnicos pueden estar en inglés
+- ✅ Documentación en español (README, CHANGELOG, guías)
+
+### 🔄 **2. Versionado de API (CRÍTICO)**
+
+**Versión Actual:** v1.1.0 (API v1)
+
+#### **Cuándo crear nueva versión (v2, v3, etc.):**
+
+**Crear NUEVA versión si:**
+- ❌ Eliminas campos de respuestas existentes
+- ❌ Cambias tipos de datos (string → number, etc.)
+- ❌ Eliminas endpoints completos
+- ❌ Cambias formato de respuestas (estructura)
+- ❌ Modificas comportamiento esperado de endpoints
+
+**NO crear nueva versión (actualizar v1):**
+- ✅ Agregas nuevos endpoints
+- ✅ Agregas campos opcionales a respuestas
+- ✅ Corriges bugs sin cambiar interfaz
+- ✅ Mejoras de rendimiento sin cambios externos
+
+#### **Sintaxis de versionado en controladores:**
+
+```typescript
+// CORRECTO: Versión en objeto de configuración
+@Controller({ path: 'users', version: '1' })
+export class UsersController {}
+
+// INCORRECTO: No uses @Version como decorador separado
+@Controller('users')
+@Version('1')  // ❌ NO HACER ESTO
+export class UsersController {}
+```
+
+#### **Proceso para crear v2:**
+
+**ANTES DE CODIFICAR:**
+1. Consulta: `resources/documents/AI conversations/PASO-A-PASO-Crear-Nueva-Version-API.md`
+2. Lee: `resources/documents/AI conversations/GUIA-Versionado-API.md`
+3. Sigue el proceso completo documentado
+
+**Pasos básicos:**
+1. Mantener v1 funcionando (backward compatibility)
+2. Crear nuevos controladores/métodos con `version: '2'`
+3. Actualizar `CHANGELOG.md` manualmente con sección `[2.0.0]`
+4. Actualizar `package.json` a versión 2.0.0
+5. Documentar breaking changes y guía de migración
+
+### 🏗️ **3. Crear Nueva Entidad**
+
+**Proceso OBLIGATORIO:**
+
+```bash
+# 1. Crear entidad en src/entities/
+# 2. Extender de BaseEntity (incluye auditoría)
+# 3. Generar migración
+npm run migration:generate -- src/database/migrations/Add[NombreEntidad]
+
+# 4. Revisar migración generada
+# 5. Ejecutar migración
+npm run migration:run
+
+# 6. Verificar
+npm run migration:show
+```
+
+**Estructura de entidad:**
+
+```typescript
+import { BaseEntity } from './base.entity';
+
+@Entity('nombre_tabla')
+export class MiEntidad extends BaseEntity {
+  @Column()
+  campo: string;
+  
+  // Relaciones, validaciones, etc.
+}
+```
+
+**⚠️ NUNCA usar `synchronize: true` - Este proyecto usa migraciones**
+
+### 🔌 **4. Crear Nuevo Endpoint**
+
+**Checklist:**
+
+- [ ] Definir versión del controlador: `@Controller({ path: 'recurso', version: '1' })`
+- [ ] Crear DTO con class-validator
+- [ ] Documentar con Swagger (@ApiOperation, @ApiResponse)
+- [ ] Implementar lógica en Service
+- [ ] Agregar guards si requiere autenticación (@UseGuards(JwtAuthGuard))
+- [ ] Actualizar archivos de testing `.http`
+- [ ] Compilar y probar: `npm run build`
+- [ ] Verificar en Swagger: http://localhost:3000/api/docs
+- [ ] **ACTUALIZAR CHANGELOG.md manualmente**
+
+**Ejemplo completo:**
+
+```typescript
+@ApiTags('mi-recurso')
+@Controller({ path: 'mi-recurso', version: '1' })
+export class MiRecursoController {
+  
+  @Get()
+  @ApiOperation({ summary: 'Listar recursos' })
+  @ApiResponse({ status: 200, description: 'Lista obtenida' })
+  async findAll(@Query() filters: MiRecursoFiltersDto) {
+    return this.service.findAll(filters);
+  }
+  
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Crear recurso' })
+  async create(@Body() dto: CreateMiRecursoDto) {
+    return this.service.create(dto);
+  }
+}
+```
+
+### 📦 **5. Modificar Entidad Existente**
+
+**Proceso:**
+
+```bash
+# 1. Modificar entidad en src/entities/
+# 2. Generar migración
+npm run migration:generate -- src/database/migrations/Update[NombreEntidad]
+
+# 3. REVISAR migración (crítico)
+cat src/database/migrations/[timestamp]-Update[NombreEntidad].ts
+
+# 4. Si es correcto, ejecutar
+npm run migration:run
+
+# 5. Verificar
+npm run migration:show
+```
+
+**Si el cambio rompe compatibilidad:**
+- ⚠️ Crear nueva versión de API (v2)
+- ⚠️ Seguir guía: PASO-A-PASO-Crear-Nueva-Version-API.md
+
+### 📋 **6. Actualizar CHANGELOG.md**
+
+**OBLIGATORIO después de cada cambio significativo:**
+
+```markdown
+## [1.X.X] - 2026-XX-XX
+
+### Added
+- Nuevo endpoint `/v1/recurso` con filtros avanzados
+
+### Changed
+- Mejorado rendimiento de búsqueda en usuarios
+
+### Fixed
+- Corregido bug en paginación con filtros combinados
+
+### Deprecated
+- Endpoint `/v1/old-endpoint` será removido en v2.0.0
+```
+
+**Formato:** Sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/)
+
+### 🧪 **7. Testing**
+
+**Antes de considerar completo:**
+
+```bash
+# Compilar
+npm run build
+
+# Tests unitarios
+npm run test
+
+# Tests e2e
+npm run test:e2e
+
+# Probar manualmente con archivos .http
+# Verificar Swagger
+```
+
+### 📚 **8. Documentación de Referencia**
+
+**Lee estos documentos antes de cambios mayores:**
+
+- `resources/documents/AI conversations/GUIA-Crear-Nuevas-Entidades.md`
+- `resources/documents/AI conversations/GUIA-Versionado-API.md`
+- `resources/documents/AI conversations/PASO-A-PASO-Crear-Nueva-Version-API.md`
+- `CHANGELOG.md` - Ver historial de cambios
+
+### ⚡ **9. Comandos Rápidos de Referencia**
+
+```bash
+# Base de datos
+docker compose up -d                    # Iniciar MySQL
+npm run migration:generate -- src/...   # Generar migración
+npm run migration:run                   # Ejecutar migraciones
+npm run migration:revert               # Revertir última migración
+npm run seed:run                        # Poblar datos iniciales
+
+# Desarrollo
+npm run build                           # Compilar
+npm run start:dev                       # Modo desarrollo (watch)
+npm run start:prod                      # Modo producción
+
+# Testing
+npm run test                            # Tests unitarios
+npm run test:e2e                        # Tests e2e
+npm run lint                            # Linter
+
+# Git (para AI que crea cambios)
+git status                              # Ver cambios
+git add .                               # Agregar todos
+git commit -m "feat: descripción"      # Commit
+```
+
+### ✅ **10. Checklist Final (AI)**
+
+Antes de reportar cambio como completo:
+
+- [ ] Código compila sin errores (`npm run build`)
+- [ ] Tests pasan (`npm run test`)
+- [ ] Documentación Swagger actualizada
+- [ ] Archivos `.http` actualizados (si aplica)
+- [ ] CHANGELOG.md actualizado manualmente
+- [ ] package.json actualizado (si cambió versión)
+- [ ] Migraciones ejecutadas y verificadas
+- [ ] Sin breaking changes (o nueva versión creada)
+- [ ] Guías de referencia consultadas
+
+---
+
+```
 
 ## 📊 Como contestar a los prompt's que se hagan a la IA
 Siempre se debe de contestar en español
