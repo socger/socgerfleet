@@ -360,7 +360,7 @@ export class ApiController {
 2. ✅ **CORS** - 10 minutos, configurar correctamente ... YA ESTA IMPLEMENTADO
 
 ### **Fase 2 (Esta semana)** - Protección de API:
-3. ✅ **Rate Limiting básico** - 30 minutos
+3. ✅ **Rate Limiting básico** - 30 minutos ... YA ESTA IMPLEMENTADO
 4. ✅ **Throttling en login** - 30 minutos más
 
 ### **Fase 3 (Opcional)** - Seguridad avanzada:
