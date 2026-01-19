@@ -25,11 +25,11 @@ GitHub Copilot: Analizando el proyecto **SocgerFleet**, aquí están las funcion
 - Health checks (`/health`, `/metrics`)
 
 ### **🛡️ 4. Seguridad Adicional**
-- **Rate Limiting** - Prevenir abuso de API
+- **Rate Limiting** - Prevenir abuso de API ... YA ESTA IMPLEMENTADO
 - **Helmet** - Security headers HTTP ... YA ESTA IMPLEMENTADO
 - **CORS** configurado correctamente ... YA ESTA IMPLEMENTADO
 - **2FA** - Autenticación de dos factores
-- **Throttling** por usuario/IP
+- **Throttling** por usuario/IP ... YA ESTA IMPLEMENTADO
 
 ### **📧 5. Gestión de Contraseñas** ... YA ESTA IMPLEMENTADO
 - Reset/recuperación de contraseñas

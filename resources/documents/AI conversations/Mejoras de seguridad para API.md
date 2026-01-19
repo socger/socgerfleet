@@ -361,7 +361,7 @@ export class ApiController {
 
 ### **Fase 2 (Esta semana)** - Protección de API:
 3. ✅ **Rate Limiting básico** - 30 minutos ... YA ESTA IMPLEMENTADO
-4. ✅ **Throttling en login** - 30 minutos más
+4. ✅ **Throttling en login** - 30 minutos más ... YA ESTA IMPLEMENTADO
 
 ### **Fase 3 (Opcional)** - Seguridad avanzada:
 5. ✅ **2FA** - Cuando tengas tiempo (3-4 horas)
