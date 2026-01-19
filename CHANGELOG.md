@@ -15,6 +15,48 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [1.1.3] - 2026-01-19
+
+### Security
+- **Login Throttling Avanzado** - Sistema inteligente de protección contra ataques de fuerza bruta en el endpoint de login
+  - **Límites por IP**: Máximo 5 intentos fallidos en 15 minutos desde la misma dirección IP
+  - **Límites por usuario**: Máximo 3 intentos fallidos en 15 minutos para el mismo email/identificador
+  - **Bloqueos progresivos**: Duración de bloqueo aumenta con cada violación
+    - 1ª violación: 5 minutos
+    - 2ª violación: 15 minutos
+    - 3ª violación: 30 minutos
+    - 4ª violación: 1 hora
+    - 5ª+ violación: 24 horas
+  - **Respuesta HTTP 429**: Informa tiempo restante de bloqueo y cuándo expira
+  - **Tracking completo**: Todos los intentos (exitosos y fallidos) se registran en base de datos
+  - **Limpieza automática**: Registros antiguos se eliminan automáticamente después de 30 días
+  - **Entidad LoginAttempt**: Nueva tabla con campos: identifier, ipAddress, userAgent, isSuccessful, failureReason, createdAt, blockedUntil
+  - **Guard personalizado**: LoginThrottlerGuard ejecuta antes de validar credenciales
+  - **Configuración timezone UTC**: TypeORM configurado con `timezone: 'Z'` para correcta gestión de timestamps
+
+### Added
+- Nueva entidad `LoginAttempt` para rastrear intentos de login
+- Guard `LoginThrottlerGuard` con lógica de throttling avanzado
+- Migración `AddLoginAttempts` para crear tabla login_attempts con índices optimizados
+- Métodos en AuthService: `recordLoginAttempt()`, `cleanOldLoginAttempts()`
+- Archivo de pruebas REST CLIENT: `throttling-tests.http` con 12 casos de prueba
+- Documentación técnica: [Implementación de Throttling Avanzado en Login](resources/documents/AI%20conversations/Implementación%20de%20Throttling%20Avanzado%20en%20Login.md)
+
+### Changed
+- Configuración TypeORM: Añadido `timezone: 'Z'` en `database.config.ts` y `data-source.ts` para forzar UTC
+- AuthController: Integrado `LoginThrottlerGuard` en endpoint de login
+- AuthService: Método `login()` ahora registra todos los intentos en base de datos
+
+### Fixed
+- Problema de zona horaria en TypeORM que causaba que las consultas de fecha con `MoreThan()` no funcionaran correctamente
+- Cambio de `MoreThan()` a `createQueryBuilder()` para queries de fecha más confiables
+
+### Technical
+- Implementación de query builder para consultas de conteo en lugar de `repository.count()` con operadores de fecha
+- Índices compuestos en tabla login_attempts para optimizar búsquedas: (ip_address, created_at) y (identifier, created_at)
+
+---
+
 ## [1.1.2] - 2026-01-19
 
 ### Security

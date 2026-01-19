@@ -2,7 +2,7 @@
   <h1>🚀 SocgerFleet API</h1>
   <p>Sistema avanzado de gestión de usuarios con autenticación JWT y refresh tokens</p>
   
-  <img src="https://img.shields.io/badge/version-1.1.2-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/version-1.1.3-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
@@ -42,7 +42,8 @@ npm run start:dev
 ```bash
 ./test-helmet-headers.sh  # Verificar cabeceras HTTP
 ./test-cors.sh            # Verificar CORS
-./test-rate-limiting.sh   # Verificar rate limiting
+./test-rate-limiting.sh   # Verificar rate limiting global
+# Pruebas de login throttling en: test endpoints with REST CLIENT extension/throttling-tests.http
 ```
 
 ---
@@ -79,7 +80,14 @@ npm run start:dev
 - **Bcrypt** - Hash seguro de contraseñas
 - **Guards** - Protección de rutas con validación de roles
 - **Gestión de sesiones** - Control granular por dispositivo
-- **Rate Limiting** - Protección contra fuerza bruta y abuso de endpoints
+- **Rate Limiting Global** - Protección contra fuerza bruta y abuso de endpoints (100 req/min)
+- **Login Throttling Avanzado** - Sistema inteligente de protección en login:
+  - Límites por IP (5 intentos/15min) y por usuario (3 intentos/15min)
+  - Bloqueos progresivos (5min → 15min → 30min → 1h → 24h)
+  - Tracking completo de intentos en base de datos
+  - HTTP 429 con información de tiempo restante de bloqueo
+- **Helmet** - Cabeceras de seguridad HTTP (CSP, HSTS, XSS protection)
+- **CORS** - Control de orígenes permitidos mediante lista blanca configurable
 
 ### 👥 **Gestión de Usuarios y Roles**
 - **CRUD completo** - Crear, leer, actualizar, eliminar usuarios y roles
@@ -691,7 +699,12 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 ### **Características Implementadas**
 - ✅ **CORS** - Control de orígenes permitidos con lista blanca configurable ([Ver guía](README-CORS.md))
 - ✅ **Helmet** - Cabeceras HTTP de seguridad contra ataques comunes
-- ✅ **Rate Limiting** - Protección contra ataques de fuerza bruta y abuso de API
+- ✅ **Rate Limiting Global** - Protección contra ataques de fuerza bruta y abuso de API (100 req/min)
+- ✅ **Login Throttling Avanzado** - Sistema inteligente de protección específico para login:
+  - Límites por IP (5 intentos/15min) y usuario (3 intentos/15min)
+  - Bloqueos progresivos con duración creciente
+  - Registro de todos los intentos en base de datos
+  - Respuesta HTTP 429 con información detallada de bloqueo
 - ✅ **Refresh Token Rotation** - Tokens rotatorios para máxima seguridad
 - ✅ **Validación de duplicados** - Email y username únicos
 - ✅ **Hash de contraseñas** - Bcrypt con salt rounds
@@ -738,7 +751,10 @@ Para verificar las cabeceras de seguridad:
 ```
 
 ### **Rate Limiting - Protección Anti-Abuso**
-El sistema implementa rate limiting para proteger la API contra:
+El sistema implementa dos capas de protección:
+
+#### **1. Rate Limiting Global** 
+Protege toda la API contra:
 - **Ataques de fuerza bruta** - Límite en intentos de login
 - **Spam de registros** - Control de creación de cuentas
 - **Abuso de recursos** - Límites en peticiones por minuto
@@ -766,6 +782,39 @@ Para verificar el rate limiting:
 ```
 
 📖 **[Documentación técnica de Rate Limiting](resources/documents/AI%20conversations/Implementación%20de%20Rate%20Limiting.md)** - Configuración detallada y ajustes
+
+#### **2. Login Throttling Avanzado**
+Sistema inteligente específico para el endpoint de login con protección progresiva:
+
+**Características:**
+- **Doble validación**: Por IP (5 intentos) y por usuario/email (3 intentos) en ventana de 15 minutos
+- **Bloqueos progresivos**: Duración aumenta con cada violación
+  - 1ª violación: 5 minutos
+  - 2ª violación: 15 minutos
+  - 3ª violación: 30 minutos
+  - 4ª violación: 1 hora
+  - 5ª+ violación: 24 horas
+- **Tracking completo**: Todos los intentos se registran en base de datos (tabla `login_attempts`)
+- **Respuesta informativa**: HTTP 429 con tiempo restante y fecha de desbloqueo
+- **Limpieza automática**: Registros antiguos (>30 días) se eliminan automáticamente
+
+**Respuesta de bloqueo:**
+```json
+{
+  "statusCode": 429,
+  "message": "Demasiados intentos de login desde esta IP. Bloqueado por 5 minutos.",
+  "blockedUntil": "2026-01-19T10:35:00.000Z",
+  "remainingTime": "5 minutos"
+}
+```
+
+**Archivos de prueba:**
+```bash
+# Pruebas completas de throttling en login
+# Ver: test endpoints with REST CLIENT extension/throttling-tests.http
+```
+
+📖 **[Documentación técnica de Login Throttling](resources/documents/AI%20conversations/Implementación%20de%20Throttling%20Avanzado%20en%20Login.md)** - Configuración detallada y arquitectura
 
 ### **Flujo de Autenticación**
 1. **Login** → Recibe access token (15 min) + refresh token (7 días)
@@ -834,6 +883,7 @@ El proyecto incluye documentación detallada para diferentes aspectos:
 - [Mejoras de Seguridad - Helmet](resources/documents/AI%20conversations/Mejoras%20de%20seguridad%20para%20API%20-%20Helmet.md) - Implementación de cabeceras HTTP de seguridad
 - [Implementing HELMET for HTTP security headers](resources/documents/AI%20conversations/Implementing%20HELMET%20for%20HTTP%20security%20headers.md) - Documentación técnica de Helmet
 - [Implementación de Rate Limiting](resources/documents/AI%20conversations/Implementación%20de%20Rate%20Limiting.md) - Protección contra ataques de fuerza bruta y abuso
+- [Implementación de Throttling Avanzado en Login](resources/documents/AI%20conversations/Implementación%20de%20Throttling%20Avanzado%20en%20Login.md) - Sistema inteligente de protección en login
 
 **Desarrollo:**
 - [Guía: Crear Nuevas Entidades](resources/documents/AI%20conversations/GUIA-Crear-Nuevas-Entidades.md) - Workflow completo con ejemplos
