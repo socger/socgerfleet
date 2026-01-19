@@ -18,6 +18,16 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 ## [1.1.1] - 2026-01-19
 
 ### Security
+- **CORS** - Implementación de Cross-Origin Resource Sharing
+  - Control de orígenes permitidos mediante lista blanca configurable
+  - Soporte para credenciales (cookies, tokens JWT)
+  - Configuración de métodos HTTP permitidos
+  - Cabeceras personalizadas permitidas y expuestas
+  - Preflight caching optimizado (1 hora)
+  - Variables de entorno: `CORS_ORIGIN`, `CORS_METHODS`
+  - Script de verificación CORS (`test-cors.sh`)
+  - Documentación completa de configuración y uso
+
 - **Helmet** - Implementación de cabeceras de seguridad HTTP
   - Protección contra ataques XSS mediante Content-Security-Policy
   - Prevención de clickjacking con X-Frame-Options
