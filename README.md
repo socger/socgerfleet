@@ -2,7 +2,7 @@
   <h1>🚀 SocgerFleet API</h1>
   <p>Sistema avanzado de gestión de usuarios con autenticación JWT y refresh tokens</p>
   
-  <img src="https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/version-1.1.2-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
@@ -42,6 +42,7 @@ npm run start:dev
 ```bash
 ./test-helmet-headers.sh  # Verificar cabeceras HTTP
 ./test-cors.sh            # Verificar CORS
+./test-rate-limiting.sh   # Verificar rate limiting
 ```
 
 ---
@@ -78,6 +79,7 @@ npm run start:dev
 - **Bcrypt** - Hash seguro de contraseñas
 - **Guards** - Protección de rutas con validación de roles
 - **Gestión de sesiones** - Control granular por dispositivo
+- **Rate Limiting** - Protección contra fuerza bruta y abuso de endpoints
 
 ### 👥 **Gestión de Usuarios y Roles**
 - **CRUD completo** - Crear, leer, actualizar, eliminar usuarios y roles
@@ -116,6 +118,7 @@ npm run start:dev
 | **JWT** | ^10.2.0 | Autenticación |
 | **Bcrypt** | ^5.1.1 | Hash de contraseñas |
 | **Helmet** | Latest | Cabeceras de seguridad HTTP |
+| **Throttler** | Latest | Rate limiting y protección anti-abuso |
 | **Class Validator** | ^0.14.0 | Validación de DTOs |
 | **Swagger/OpenAPI** | ^7.4.2 | Documentación interactiva de API |
 | **Docker** | Latest | Containerización |
@@ -688,6 +691,7 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 ### **Características Implementadas**
 - ✅ **CORS** - Control de orígenes permitidos con lista blanca configurable ([Ver guía](README-CORS.md))
 - ✅ **Helmet** - Cabeceras HTTP de seguridad contra ataques comunes
+- ✅ **Rate Limiting** - Protección contra ataques de fuerza bruta y abuso de API
 - ✅ **Refresh Token Rotation** - Tokens rotatorios para máxima seguridad
 - ✅ **Validación de duplicados** - Email y username únicos
 - ✅ **Hash de contraseñas** - Bcrypt con salt rounds
@@ -732,6 +736,36 @@ Para verificar las cabeceras de seguridad:
 ```bash
 ./test-helmet-headers.sh
 ```
+
+### **Rate Limiting - Protección Anti-Abuso**
+El sistema implementa rate limiting para proteger la API contra:
+- **Ataques de fuerza bruta** - Límite en intentos de login
+- **Spam de registros** - Control de creación de cuentas
+- **Abuso de recursos** - Límites en peticiones por minuto
+- **Ataques DoS básicos** - Prevención de sobrecarga
+
+**Límites configurados:**
+- **Global**: 100 peticiones/minuto (todos los endpoints)
+- **Login**: 5 intentos/minuto
+- **Register**: 3 intentos/minuto
+- **Refresh Token**: 10 intentos/minuto
+- **Password Reset**: 3 intentos/15 minutos
+
+**Respuesta al exceder límites:**
+```http
+HTTP/1.1 429 Too Many Requests
+X-RateLimit-Limit: 5
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 60
+Retry-After: 60
+```
+
+Para verificar el rate limiting:
+```bash
+./test-rate-limiting.sh  # Prueba todos los endpoints automáticamente
+```
+
+📖 **[Documentación técnica de Rate Limiting](resources/documents/AI%20conversations/Implementación%20de%20Rate%20Limiting.md)** - Configuración detallada y ajustes
 
 ### **Flujo de Autenticación**
 1. **Login** → Recibe access token (15 min) + refresh token (7 días)
@@ -799,6 +833,7 @@ El proyecto incluye documentación detallada para diferentes aspectos:
 - [Implementación de CORS](resources/documents/AI%20conversations/Implementación%20de%20CORS.md) - Documentación técnica detallada
 - [Mejoras de Seguridad - Helmet](resources/documents/AI%20conversations/Mejoras%20de%20seguridad%20para%20API%20-%20Helmet.md) - Implementación de cabeceras HTTP de seguridad
 - [Implementing HELMET for HTTP security headers](resources/documents/AI%20conversations/Implementing%20HELMET%20for%20HTTP%20security%20headers.md) - Documentación técnica de Helmet
+- [Implementación de Rate Limiting](resources/documents/AI%20conversations/Implementación%20de%20Rate%20Limiting.md) - Protección contra ataques de fuerza bruta y abuso
 
 **Desarrollo:**
 - [Guía: Crear Nuevas Entidades](resources/documents/AI%20conversations/GUIA-Crear-Nuevas-Entidades.md) - Workflow completo con ejemplos

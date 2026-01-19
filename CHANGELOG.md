@@ -10,8 +10,32 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 ### Planeado
 - Endpoint GraphQL para consultas flexibles
 - Sistema de webhooks para integraciones
-- Rate limiting y throttling
 - Migración a v2 de la API con mejoras de paginación
+- Rate limiting con Redis para entornos multi-servidor
+
+---
+
+## [1.1.2] - 2026-01-19
+
+### Security
+- **Rate Limiting** - Implementación de protección contra ataques de fuerza bruta y abuso de endpoints
+  - Límite global: 100 peticiones por minuto para toda la API
+  - Límites específicos por endpoint crítico:
+    - Login: 5 intentos por minuto
+    - Register: 3 intentos por minuto
+    - Refresh token: 10 intentos por minuto
+    - Request password reset: 3 intentos por 15 minutos
+    - Reset password: 3 intentos por 15 minutos
+  - Respuesta HTTP 429 al exceder límites
+  - Headers informativos: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
+  - Identificación por IP del cliente
+  - Paquete oficial @nestjs/throttler integrado
+  - Script de verificación automática (test-rate-limiting.sh)
+  - Documentación completa de configuración y testing
+
+### Added
+- Script `test-rate-limiting.sh` para verificar automáticamente el funcionamiento del rate limiting en todos los endpoints
+- Documentación técnica: [Implementación de Rate Limiting](resources/documents/AI%20conversations/Implementación%20de%20Rate%20Limiting.md)
 
 ---
 
