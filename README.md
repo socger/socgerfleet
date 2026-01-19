@@ -12,6 +12,40 @@
 
 ---
 
+## ⚡ Inicio Rápido
+
+```bash
+# 1. Clonar e instalar
+git clone <tu-repositorio>
+cd socgerfleet && npm install
+
+# 2. Configurar
+cp .env.example .env
+# Edita .env con tus credenciales
+
+# 3. Levantar base de datos
+docker compose up -d
+
+# 4. Ejecutar migraciones
+npm run migration:run
+
+# 5. (Opcional) Poblar datos de prueba
+npm run seed:run
+
+# 6. Iniciar servidor
+npm run start:dev
+
+# 7. Abrir Swagger: http://localhost:3000/api/docs
+```
+
+**Pruebas de Seguridad:**
+```bash
+./test-helmet-headers.sh  # Verificar cabeceras HTTP
+./test-cors.sh            # Verificar CORS
+```
+
+---
+
 ## 📑 Tabla de Contenidos
 
 - [📋 Descripción](#-descripción)
@@ -124,7 +158,7 @@ npm install
 cp .env.example .env
 ```
 
-Editar [`.env`](.env ):
+Editar [`.env`](.env):
 ```env
 # Database
 DB_HOST=localhost
@@ -142,7 +176,21 @@ JWT_REFRESH_EXPIRES_IN=7d
 # App
 PORT=3000
 NODE_ENV=development
+
+# CORS (Seguridad)
+CORS_ORIGIN=http://localhost:3000,http://localhost:4200,http://localhost:5173
+CORS_METHODS=GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS
+
+# Email (opcional)
+MAIL_HOST=localhost
+MAIL_PORT=1025
+APP_URL=http://localhost:3000
 ```
+
+**Importante:**
+- Cambia `tu_password`, `tu_jwt_secret`, etc. por valores seguros
+- Para CORS en producción, usa solo tus dominios reales: `CORS_ORIGIN=https://tuapp.com`
+- **NUNCA** uses `CORS_ORIGIN=*` en producción
 
 ### **4. Levantar contenedores Docker**
 ```bash
@@ -190,6 +238,16 @@ La aplicación estará disponible en:
 - **phpMyAdmin**: http://localhost:8080
 
 **Nota:** La API utiliza versionado URI. Todos los endpoints están prefijados con `/v1/` (ejemplo: `/v1/users`, `/v1/auth/login`)
+
+### **8. Verificar Seguridad (Opcional)**
+
+```bash
+# Probar cabeceras de seguridad (Helmet)
+./test-helmet-headers.sh
+
+# Probar configuración CORS
+./test-cors.sh
+```
 
 ## 🗄️ Gestión de Base de Datos
 
@@ -628,6 +686,7 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 ## 🔒 Seguridad
 
 ### **Características Implementadas**
+- ✅ **CORS** - Control de orígenes permitidos con lista blanca configurable ([Ver guía](README-CORS.md))
 - ✅ **Helmet** - Cabeceras HTTP de seguridad contra ataques comunes
 - ✅ **Refresh Token Rotation** - Tokens rotatorios para máxima seguridad
 - ✅ **Validación de duplicados** - Email y username únicos
@@ -643,6 +702,23 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 - ✅ **Auditoría completa** - Registro de quién crea, modifica y elimina registros
 - ✅ **Soft delete** - Recuperación de datos eliminados accidentalmente
 - ✅ **Migraciones versionadas** - Control total del esquema de base de datos
+
+### **CORS - Cross-Origin Resource Sharing**
+Control de qué dominios pueden acceder a la API desde navegadores web:
+- **Lista blanca configurable** - Solo orígenes específicos autorizados
+- **Soporte de credenciales** - Cookies y tokens JWT
+- **Preflight caching** - Optimización de rendimiento
+- **Variables de entorno** - `CORS_ORIGIN`, `CORS_METHODS`
+
+```bash
+# Configurar en .env
+CORS_ORIGIN=http://localhost:4200,https://tuapp.com
+
+# Probar configuración
+./test-cors.sh
+```
+
+📖 **[Guía completa de CORS](README-CORS.md)** - Configuración, ejemplos y troubleshooting
 
 ### **Helmet - Seguridad HTTP**
 Helmet configura automáticamente las siguientes cabeceras de seguridad:
@@ -719,7 +795,10 @@ El proyecto incluye documentación detallada para diferentes aspectos:
 - [Resumen de Implementación](resources/documents/AI%20conversations/RESUMEN-Implementacion-Completa.md) - Resumen ejecutivo de cambios
 
 **Seguridad:**
+- [Guía de CORS](README-CORS.md) - Configuración completa de Cross-Origin Resource Sharing
+- [Implementación de CORS](resources/documents/AI%20conversations/Implementación%20de%20CORS.md) - Documentación técnica detallada
 - [Mejoras de Seguridad - Helmet](resources/documents/AI%20conversations/Mejoras%20de%20seguridad%20para%20API%20-%20Helmet.md) - Implementación de cabeceras HTTP de seguridad
+- [Implementing HELMET for HTTP security headers](resources/documents/AI%20conversations/Implementing%20HELMET%20for%20HTTP%20security%20headers.md) - Documentación técnica de Helmet
 
 **Desarrollo:**
 - [Guía: Crear Nuevas Entidades](resources/documents/AI%20conversations/GUIA-Crear-Nuevas-Entidades.md) - Workflow completo con ejemplos
@@ -1070,7 +1149,7 @@ Siempre se debe de contestar en español
 
 ## 📝 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver [`LICENSE`](LICENSE ) para más detalles.
+Este proyecto está bajo la Licencia MIT. Ver [`LICENSE`](LICENSE) para más detalles.
 
 ## 👤 Autor
 
