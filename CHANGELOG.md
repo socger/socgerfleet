@@ -15,6 +15,20 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [1.1.1] - 2026-01-19
+
+### Security
+- **Helmet** - Implementación de cabeceras de seguridad HTTP
+  - Protección contra ataques XSS mediante Content-Security-Policy
+  - Prevención de clickjacking con X-Frame-Options
+  - Protección contra MIME type sniffing
+  - Configuración de HSTS (Strict-Transport-Security)
+  - Control de referrer policy
+  - Configuración personalizada compatible con Swagger UI
+  - Script de verificación de cabeceras (`test-helmet-headers.sh`)
+
+---
+
 ## [1.1.0] - 2026-01-19
 
 ### Added
