@@ -2,12 +2,36 @@
   <h1>🚀 SocgerFleet API</h1>
   <p>Sistema avanzado de gestión de usuarios con autenticación JWT y refresh tokens</p>
   
+  <img src="https://img.shields.io/badge/version-1.1.1-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white" />
   <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
   <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
   <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
 </div>
+
+---
+
+## 📑 Tabla de Contenidos
+
+- [📋 Descripción](#-descripción)
+- [✨ Características Principales](#-características-principales)
+- [🛠️ Stack Tecnológico](#️-stack-tecnológico)
+- [🏗️ Arquitectura](#️-arquitectura)
+- [🚀 Instalación y Configuración](#-instalación-y-configuración)
+- [🗄️ Gestión de Base de Datos](#️-gestión-de-base-de-datos)
+- [📡 API Endpoints](#-api-endpoints)
+- [🧪 Testing](#-testing)
+- [🔒 Seguridad](#-seguridad)
+- [🐳 Docker](#-docker)
+- [📊 Funcionalidades Destacadas](#-funcionalidades-destacadas)
+- [📚 Documentación](#-documentación)
+- [🤖 Guía para IA](#-guía-para-ia-crearmodificar-endpoints-y-entidades)
+- [🎯 Casos de Uso](#-casos-de-uso)
+- [🤝 Contribuir](#-contribuir)
+- [📝 Licencia](#-licencia)
+
+---
 
 ## 📋 Descripción
 
@@ -57,6 +81,7 @@
 | **MySQL** | 8.0 | Base de datos |
 | **JWT** | ^10.2.0 | Autenticación |
 | **Bcrypt** | ^5.1.1 | Hash de contraseñas |
+| **Helmet** | Latest | Cabeceras de seguridad HTTP |
 | **Class Validator** | ^0.14.0 | Validación de DTOs |
 | **Swagger/OpenAPI** | ^7.4.2 | Documentación interactiva de API |
 | **Docker** | Latest | Containerización |
@@ -603,6 +628,7 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 ## 🔒 Seguridad
 
 ### **Características Implementadas**
+- ✅ **Helmet** - Cabeceras HTTP de seguridad contra ataques comunes
 - ✅ **Refresh Token Rotation** - Tokens rotatorios para máxima seguridad
 - ✅ **Validación de duplicados** - Email y username únicos
 - ✅ **Hash de contraseñas** - Bcrypt con salt rounds
@@ -617,6 +643,19 @@ GET /roles?minUsers=1&maxUsers=5&sortBy=userCount&sortOrder=DESC
 - ✅ **Auditoría completa** - Registro de quién crea, modifica y elimina registros
 - ✅ **Soft delete** - Recuperación de datos eliminados accidentalmente
 - ✅ **Migraciones versionadas** - Control total del esquema de base de datos
+
+### **Helmet - Seguridad HTTP**
+Helmet configura automáticamente las siguientes cabeceras de seguridad:
+- **Content-Security-Policy (CSP)** - Previene ataques XSS
+- **X-Frame-Options** - Protección contra clickjacking
+- **X-Content-Type-Options** - Previene MIME type sniffing
+- **Strict-Transport-Security (HSTS)** - Fuerza conexiones HTTPS
+- **Referrer-Policy** - Control de información del referrer
+
+Para verificar las cabeceras de seguridad:
+```bash
+./test-helmet-headers.sh
+```
 
 ### **Flujo de Autenticación**
 1. **Login** → Recibe access token (15 min) + refresh token (7 días)
@@ -678,6 +717,9 @@ El proyecto incluye documentación detallada para diferentes aspectos:
 - [Mejoras de Base de Datos](resources/documents/AI%20conversations/Mejoras-Base-Datos.md) - Guía completa de migraciones, seeders y auditoría
 - [Checklist de Implementación](resources/documents/AI%20conversations/CHECKLIST-Implementacion-BD.md) - Pasos para aplicar las mejoras
 - [Resumen de Implementación](resources/documents/AI%20conversations/RESUMEN-Implementacion-Completa.md) - Resumen ejecutivo de cambios
+
+**Seguridad:**
+- [Mejoras de Seguridad - Helmet](resources/documents/AI%20conversations/Mejoras%20de%20seguridad%20para%20API%20-%20Helmet.md) - Implementación de cabeceras HTTP de seguridad
 
 **Desarrollo:**
 - [Guía: Crear Nuevas Entidades](resources/documents/AI%20conversations/GUIA-Crear-Nuevas-Entidades.md) - Workflow completo con ejemplos
