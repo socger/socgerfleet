@@ -24,3 +24,5 @@
         }
 
         Creo que no comprueba si existe el rol del usuario antes de pasar a borrarlo.
+
+* Repasar todos los endpoints de swagger porque hay errores ... primer error encontrado en el endpoint "GET /users Listar usuarios con filtros"
