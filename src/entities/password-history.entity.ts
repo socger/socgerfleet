@@ -1,17 +1,14 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { BaseEntity } from './base.entity';
 
 @Entity('password_history')
-export class PasswordHistory {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class PasswordHistory extends BaseEntity {
 
   @Column({ name: 'user_id' })
   userId: number;
@@ -22,7 +19,4 @@ export class PasswordHistory {
 
   @Column({ length: 255 })
   password: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
 }

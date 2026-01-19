@@ -1,12 +1,11 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { BaseEntity } from './base.entity';
 
 export enum TokenType {
   EMAIL_VERIFICATION = 'email_verification',
@@ -14,9 +13,7 @@ export enum TokenType {
 }
 
 @Entity('verification_tokens')
-export class VerificationToken {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class VerificationToken extends BaseEntity {
 
   @Column({ name: 'user_id' })
   userId: number;
@@ -39,7 +36,4 @@ export class VerificationToken {
 
   @Column({ name: 'is_used', default: false })
   isUsed: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
 }

@@ -202,7 +202,7 @@ export class UsersService {
     });
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto, createdBy?: number): Promise<User> {
     // VALIDAR DUPLICADOS ANTES DE CREAR
     const existingEmail = await this.userRepository.findOne({
       where: { email: createUserDto.email },
@@ -243,17 +243,18 @@ export class UsersService {
     // Hashear contraseña
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-    // Crear usuario
+    // Crear usuario con información de auditoría
     const user = this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
       roles,
+      createdBy,
     });
 
     return this.userRepository.save(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(id: number, updateUserDto: UpdateUserDto, updatedBy?: number): Promise<User> {
     const user = await this.findOne(id);
 
     // VALIDAR DUPLICADOS SI SE CAMBIA EMAIL O USERNAME
@@ -293,15 +294,24 @@ export class UsersService {
       user.roles = roles;
     }
 
-    // Aplicar otros cambios
+    // Aplicar otros cambios y auditoría
     Object.assign(user, updateUserDto);
+    if (updatedBy) {
+      user.updatedBy = updatedBy;
+    }
 
     return this.userRepository.save(user);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number, deletedBy?: number): Promise<void> {
     const user = await this.findOne(id);
-    await this.userRepository.remove(user);
+    
+    // Soft delete con información de auditoría
+    if (deletedBy) {
+      user.deletedBy = deletedBy;
+    }
+    
+    await this.userRepository.softRemove(user);
   }
 
   async assignRole(userId: number, roleId: number): Promise<User> {

@@ -15,6 +15,7 @@ import {
   ParseIntPipe,
   Query,
   DefaultValuePipe,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -29,6 +30,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { UserFiltersDto } from './dto/user-filters.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('users')
@@ -202,6 +204,8 @@ export class UsersController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Crear nuevo usuario',
@@ -216,14 +220,20 @@ export class UsersController {
     status: 400,
     description: 'Email o username ya registrado',
   })
-  async create(@Body(ValidationPipe) createUserDto: CreateUserDto) {
+  async create(
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+    @Request() req,
+  ) {
+    const createdBy = req.user?.userId;
     return {
       message: 'Usuario creado exitosamente',
-      data: await this.usersService.create(createUserDto),
+      data: await this.usersService.create(createUserDto, createdBy),
     };
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Actualizar usuario',
     description: 'Actualiza la información de un usuario existente.',
@@ -237,18 +247,22 @@ export class UsersController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateUserDto: UpdateUserDto,
+    @Request() req,
   ) {
+    const updatedBy = req.user?.userId;
     return {
       message: 'Usuario actualizado exitosamente',
-      data: await this.usersService.update(id, updateUserDto),
+      data: await this.usersService.update(id, updateUserDto, updatedBy),
     };
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Eliminar usuario',
-    description: 'Elimina un usuario del sistema de forma permanente.',
+    summary: 'Eliminar usuario (soft delete)',
+    description: 'Elimina un usuario del sistema de forma lógica (soft delete). El usuario se mantiene en la base de datos pero marcado como eliminado.',
   })
   @ApiParam({ name: 'id', type: Number, description: 'ID del usuario' })
   @ApiResponse({
@@ -256,8 +270,9 @@ export class UsersController {
     description: 'Usuario eliminado exitosamente',
   })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.usersService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    const deletedBy = req.user?.userId;
+    await this.usersService.remove(id, deletedBy);
     return {
       message: 'Usuario eliminado exitosamente',
     };

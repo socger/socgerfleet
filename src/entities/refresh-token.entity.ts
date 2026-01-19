@@ -1,17 +1,14 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { BaseEntity } from './base.entity';
 
 @Entity('refresh_tokens')
-export class RefreshToken {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class RefreshToken extends BaseEntity {
 
   @Column({ length: 500 })
   token: string;
@@ -30,9 +27,6 @@ export class RefreshToken {
 
   @Column({ name: 'ip_address', nullable: true, length: 45 })
   ipAddress?: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })

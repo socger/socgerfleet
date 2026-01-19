@@ -12,6 +12,8 @@ import {
   ParseIntPipe,
   Query,
   DefaultValuePipe,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,12 +21,14 @@ import {
   ApiResponse,
   ApiQuery,
   ApiParam,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { RoleFiltersDto } from './dto/role-filters.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('roles')
 @Controller('roles')
@@ -183,6 +187,8 @@ export class RolesController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({
     summary: 'Crear nuevo rol',
@@ -197,14 +203,17 @@ export class RolesController {
     status: 400,
     description: 'Nombre de rol ya existe',
   })
-  async create(@Body(ValidationPipe) createRoleDto: CreateRoleDto) {
+  async create(@Body(ValidationPipe) createRoleDto: CreateRoleDto, @Request() req) {
+    const createdBy = req.user?.userId;
     return {
       message: 'Rol creado exitosamente',
-      data: await this.rolesService.create(createRoleDto),
+      data: await this.rolesService.create(createRoleDto, createdBy),
     };
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Actualizar rol',
     description: 'Actualiza la información de un rol existente.',
@@ -218,18 +227,22 @@ export class RolesController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body(ValidationPipe) updateRoleDto: UpdateRoleDto,
+    @Request() req,
   ) {
+    const updatedBy = req.user?.userId;
     return {
       message: 'Rol actualizado exitosamente',
-      data: await this.rolesService.update(id, updateRoleDto),
+      data: await this.rolesService.update(id, updateRoleDto, updatedBy),
     };
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({
-    summary: 'Eliminar rol',
-    description: 'Elimina un rol del sistema de forma permanente.',
+    summary: 'Eliminar rol (soft delete)',
+    description: 'Elimina un rol del sistema de forma lógica (soft delete). El rol se mantiene en la base de datos pero marcado como eliminado.',
   })
   @ApiParam({ name: 'id', type: Number, description: 'ID del rol' })
   @ApiResponse({
@@ -241,8 +254,9 @@ export class RolesController {
     status: 400,
     description: 'No se puede eliminar un rol con usuarios asignados',
   })
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    await this.rolesService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    const deletedBy = req.user?.userId;
+    await this.rolesService.remove(id, deletedBy);
     return {
       message: 'Rol eliminado exitosamente',
     };

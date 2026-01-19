@@ -1,19 +1,15 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Exclude } from 'class-transformer';
+import { BaseEntity } from './base.entity';
 
 @Entity('users')
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class User extends BaseEntity {
 
   @Column({ unique: true, length: 50 })
   username: string;
@@ -36,12 +32,6 @@ export class User {
 
   @Column({ name: 'email_verified', default: false })
   emailVerified: boolean;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 
   @ManyToMany(() => Role, (role) => role.users)
   @JoinTable({
