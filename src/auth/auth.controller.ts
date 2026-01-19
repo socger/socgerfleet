@@ -20,6 +20,7 @@ import {
   ApiBearerAuth,
   ApiBody,
 } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { LoginDto } from './dto/login.dto';
@@ -47,6 +48,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  // Rate limiting estricto para login: 5 intentos por minuto
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOperation({
     summary: 'Iniciar sesión',
     description:
@@ -80,6 +83,8 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
+  // Rate limiting para registro: 3 intentos por minuto
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @ApiOperation({
     summary: 'Registrar nuevo usuario',
     description:
@@ -117,6 +122,8 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  // Rate limiting para refresh token: 10 intentos por minuto
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @ApiOperation({
     summary: 'Renovar access token',
     description:
@@ -230,6 +237,8 @@ export class AuthController {
 
   @Post('request-password-reset')
   @HttpCode(HttpStatus.OK)
+  // Rate limiting para solicitud de reset: 3 intentos por 15 minutos
+  @Throttle({ default: { limit: 3, ttl: 900000 } })
   @ApiOperation({
     summary: 'Solicitar recuperación de contraseña',
     description:
@@ -258,6 +267,8 @@ export class AuthController {
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
+  // Rate limiting para resetear contraseña: 3 intentos por 15 minutos
+  @Throttle({ default: { limit: 3, ttl: 900000 } })
   @ApiOperation({
     summary: 'Resetear contraseña con token',
     description:
