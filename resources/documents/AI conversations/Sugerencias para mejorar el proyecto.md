@@ -31,17 +31,17 @@ GitHub Copilot: Analizando el proyecto **SocgerFleet**, aquí están las funcion
 - **2FA** - Autenticación de dos factores
 - **Throttling** por usuario/IP ... YA ESTA IMPLEMENTADO
 
-### **📧 5. Gestión de Contraseñas** ... YA ESTA IMPLEMENTADO
-- Reset/recuperación de contraseñas
-- Confirmación de email en registro
-- Cambio de contraseña con validación
-- Historial de contraseñas
+### **📧 5. Gestión de Contraseñas**
+- Reset/recuperación de contraseñas ... YA ESTA IMPLEMENTADO
+- Confirmación de email en registro ... YA ESTA IMPLEMENTADO
+- Cambio de contraseña con validación ... YA ESTA IMPLEMENTADO
+- Historial de contraseñas ... YA ESTA IMPLEMENTADO
 
-### **🗃️ 6. Mejoras de Base de Datos** ... YA ESTA IMPLEMENTADO
-- **Migraciones** TypeORM para versionado
-- **Soft deletes** en lugar de borrado físico
-- **Auditoría** (createdBy, updatedBy, deletedBy)
-- **Seeders** para datos iniciales
+### **🗃️ 6. Mejoras de Base de Datos**
+- **Migraciones** TypeORM para versionado ... YA ESTA IMPLEMENTADO
+- **Soft deletes** en lugar de borrado físico ... YA ESTA IMPLEMENTADO
+- **Auditoría** (createdBy, updatedBy, deletedBy) ... YA ESTA IMPLEMENTADO
+- **Seeders** para datos iniciales ... YA ESTA IMPLEMENTADO
 
 ### **⚡ 7. Performance**
 - **Redis** para caché
@@ -87,13 +87,13 @@ GitHub Copilot: Analizando el proyecto **SocgerFleet**, aquí están las funcion
 1. Swagger/OpenAPI ... YA ESTA IMPLEMENTADO
 2. Testing (al menos E2E)
 3. Logging estructurado
-4. Rate limiting
+4. Rate limiting ... YA ESTA IMPLEMENTADO
 5. Recuperación de contraseñas ... YA ESTA IMPLEMENTADO
 6. Migraciones TypeORM ... YA ESTA IMPLEMENTADO
 
 **Media prioridad:**
 7. Health checks
-8. Soft deletes
+8. Soft deletes ... YA ESTA IMPLEMENTADO
 9. Upload de archivos
 10. Redis caché
 11. Email transaccional
