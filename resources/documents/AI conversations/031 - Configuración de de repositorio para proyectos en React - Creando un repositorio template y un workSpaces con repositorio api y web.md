@@ -993,3 +993,45 @@ git push project main
 - `cuidamet-api` → Proyecto específico (con código personalizado)
 
 ¿Tienes el repositorio creado en GitHub o necesitas ayuda con eso?
+
+User: Entonces si hago un commit en socgerfleet, cómo puedo actualizar cuidamet-api?
+
+GitHub Copilot: Muy simple:
+
+## 1. Haces cambios en el template
+
+```bash
+cd /home/socger/trabajo/socger/socgerfleet
+
+# Haces cambios en archivos
+# ...
+
+git add .
+git commit -m "Mejora: nueva funcionalidad X"
+git push origin main
+```
+
+## 2. Actualizas cuidamet-api
+
+```bash
+cd /home/socger/trabajo/socger/cuidamet-api
+
+# Descargas los cambios del template
+git fetch template
+
+# Los aplicas a tu proyecto
+git merge template/main
+
+# Si hay conflictos, los resuelves y luego:
+git add .
+git commit -m "Merge template updates"
+
+# Subes los cambios a tu proyecto
+git push project main
+```
+
+**Resumen:**
+- `git fetch template` → Descarga cambios
+- `git merge template/main` → Los integra en tu proyecto
+
+Repites esto cada vez que actualices el template y quieras heredar esos cambios. ¿Quieres probar haciendo un cambio de prueba en socgerfleet y sincronizándolo?
