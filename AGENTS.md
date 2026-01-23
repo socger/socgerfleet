@@ -431,7 +431,7 @@ POST /users/{userId}/roles/{roleId}
 
 - **Proyecto**: SocgerFleet Backend API
 - **Framework**: NestJS 10.0.0
-- **Documentación**: Este archivo Agent.md
+- **Documentación**: Este archivo AGENTS.md
 - **Tests**: Carpeta `test endpoints with REST CLIENT extension/`
 
 ### Links Útiles

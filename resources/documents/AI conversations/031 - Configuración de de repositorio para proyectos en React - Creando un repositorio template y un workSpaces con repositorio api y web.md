@@ -898,7 +898,7 @@ socger@socger-imac81:~/trabajo/socger/cuidamet-api$ ls -al
 total 824
 drwxrwxr-x 9 socger socger   4096 ene 22 17:49  .
 drwxrwxr-x 8 socger socger   4096 ene 22 17:49  ..
--rw-rw-r-- 1 socger socger  12877 ene 22 17:49  Agent.md
+-rw-rw-r-- 1 socger socger  12877 ene 22 17:49  AGENTS.md
 -rw-rw-r-- 1 socger socger      0 ene 22 17:49  api-tests.http
 -rw-rw-r-- 1 socger socger   9870 ene 22 17:49  CHANGELOG.md
 -rw-rw-r-- 1 socger socger 125036 ene 22 17:49  chatConCopilotCreandoElProyecto.md

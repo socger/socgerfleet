@@ -1,6 +1,6 @@
-User: Necesitas un Agent.md o un Claude.md para entender lo que hace el proyecto?
+User: Necesitas un AGENTS.md o un Claude.md para entender lo que hace el proyecto?
 
-GitHub Copilot: Optimizing tool selection...Sería útil leer el Agent.md que ya tienes en el proyecto para entender mejor el contexto y los objetivos. ¿Quieres que lo lea para tener una visión más completa del proyecto?
+GitHub Copilot: Optimizing tool selection...Sería útil leer el AGENTS.md que ya tienes en el proyecto para entender mejor el contexto y los objetivos. ¿Quieres que lo lea para tener una visión más completa del proyecto?
 
 También veo que tienes chatConCopilotCreandoElProyecto.md que podría contener información relevante sobre las decisiones de diseño.
 
@@ -8,9 +8,9 @@ User: Pues ten en cuenta también todos los ficheros .md de conversaciones que h
 
 GitHub Copilot: Read [](file:///home/socger/trabajo/socger/socgerfleet/resources/documents/AI%20conversations)
 
-Read [](file:///home/socger/trabajo/socger/socgerfleet/Agent.md#1-1), lines 1 to 200
+Read [](file:///home/socger/trabajo/socger/socgerfleet/AGENTS.md#1-1), lines 1 to 200
 
-Read [](file:///home/socger/trabajo/socger/socgerfleet/resources/documents/AI%20conversations/Agent.md%20o%20Claude.md%20para%20entender%20el%20proyecto.md)
+Read [](file:///home/socger/trabajo/socger/socgerfleet/resources/documents/AI%20conversations/AGENTS.md%20o%20Claude.md%20para%20entender%20el%20proyecto.md)
 
 Read [](file:///home/socger/trabajo/socger/socgerfleet/resources/documents/AI%20conversations/Node.js%20project%20setup%20instructions.md#1-1), lines 1 to 200
 
@@ -18,7 +18,7 @@ Read [](file:///home/socger/trabajo/socger/socgerfleet/chatConCopilotCreandoElPr
 
 Perfecto, ahora tengo contexto completo del proyecto. He leído:
 
-1. **Agent.md** - Documentación completa del proyecto que describe:
+1. **AGENTS.md** - Documentación completa del proyecto que describe:
    - Sistema de autenticación JWT con refresh tokens
    - CRUD de usuarios y roles
    - Sistema RBAC (Role-Based Access Control)
@@ -41,7 +41,7 @@ GitHub Copilot: Searched for files matching `**/*.md`, 6 matches
 
 Read [](file:///home/socger/trabajo/socger/socgerfleet/README.md)
 
-Read [](file:///home/socger/trabajo/socger/socgerfleet/Agent.md#200-200), lines 200 to 444
+Read [](file:///home/socger/trabajo/socger/socgerfleet/AGENTS.md#200-200), lines 200 to 444
 
 Read [](file:///home/socger/trabajo/socger/socgerfleet/chatConCopilotCreandoElProyecto.md#1-1), lines 1 to 200
 
@@ -62,7 +62,7 @@ He leído todos los archivos .md del proyecto. Aquí está el resumen completo d
    - **Nueva sección:** Documentación almacenada en `resources/documents/AI conversations`
    - **Nueva sección:** Instrucción de responder siempre en español
 
-2. **Agent.md** (444 líneas) - Documentación técnica completa:
+2. **AGENTS.md** (444 líneas) - Documentación técnica completa:
    - Arquitectura del proyecto
    - Sistema de autenticación JWT con refresh tokens
    - Gestión de usuarios y roles (RBAC)
@@ -79,7 +79,7 @@ He leído todos los archivos .md del proyecto. Aquí está el resumen completo d
    - Solución de problemas de instalación
    - Gestión de vulnerabilidades
 
-5. **[Agent.md o Claude.md para entender el proyecto.md](resources/documents/AI%20conversations/Agent.md%20o%20Claude.md%20para%20entender%20el%20proyecto.md)** - Archivo vacío
+5. **[AGENTS.md o Claude.md para entender el proyecto.md](resources/documents/AI%20conversations/AGENTS.md%20o%20Claude.md%20para%20entender%20el%20proyecto.md)** - Archivo vacío
 
 ## Información Clave del Proyecto
 
