@@ -13,7 +13,14 @@ export const databaseConfig = (): TypeOrmModuleOptions => ({
   username: process.env.DB_USERNAME || 'socger',
   password: process.env.DB_PASSWORD || 'dcb4f2e8106a0ef44c3f530d3ae3f9fd',
   database: process.env.DB_DATABASE || 'socgerfleet',
-  entities: [User, Role, RefreshToken, PasswordHistory, VerificationToken, LoginAttempt],
+  entities: [
+    User,
+    Role,
+    RefreshToken,
+    PasswordHistory,
+    VerificationToken,
+    LoginAttempt,
+  ],
   migrations: ['dist/database/migrations/**/*.js'],
   synchronize: false, // IMPORTANTE: false cuando usamos migraciones
   logging: process.env.NODE_ENV === 'development',
