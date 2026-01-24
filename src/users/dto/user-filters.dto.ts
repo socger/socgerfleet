@@ -5,7 +5,7 @@ import {
   IsEnum,
   MinLength,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export enum UserSortBy {
@@ -21,6 +21,15 @@ export enum SortOrder {
   DESC = 'DESC',
 }
 
+/**
+ * DTO para filtros de búsqueda en usuarios.
+ * 
+ * ⚠️ CRÍTICO: Campos booleanos como `isActive` requieren @Transform especial
+ * para convertir strings a booleanos. Ver método applyUserFilters en users.service.ts
+ * que convierte a 0/1 para MySQL TINYINT(1).
+ * 
+ * Documentación: resources/documents/AI conversations/.../035-BOOLEAN-FILTERS-FIX.md
+ */
 export class UserFiltersDto {
   @ApiPropertyOptional({
     description:
@@ -69,8 +78,12 @@ export class UserFiltersDto {
     example: true,
   })
   @IsOptional()
-  @Type(() => Boolean)
   @IsBoolean()
+  @Transform(({ value }) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
   isActive?: boolean;
 
   @ApiPropertyOptional({
